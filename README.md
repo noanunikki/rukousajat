@@ -1,6 +1,8 @@
 # Rukousajat – islamilaiset rukousajat
 
-Yhden tiedoston (`rukousajat.html`) rukousaikasovellus. Avaa tiedosto selaimessa – ei asennusta eikä palvelinta.
+Käyttö suoraan: https://noanunikki.github.io/rukousajat/
+
+Yhden tiedoston (`index.html`) rukousaikasovellus. Avaa tiedosto selaimessa – ei asennusta eikä palvelinta.
 
 - Rukousajat (Imsak, Fajr, auringonnousu, Dhuhr/Jumu'ah, Asr, Maghrib, Isha, keskiyö, yön viimeinen kolmannes)
 - Tähtitieteellinen laskenta laitteessa (Meeus), verrattu Aladhan.com-palveluun (±1 min, Asr korkeilla leveysasteilla enemmän)
