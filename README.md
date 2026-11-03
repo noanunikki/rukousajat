@@ -10,6 +10,6 @@ Yhden tiedoston (`index.html`) rukousaikasovellus. Avaa tiedosto selaimessa – 
 - GPS, kaupunkihaku, aikavyöhyke ja kesäaika automaattisesti
 - Hijri-kalenteri (Umm al-Qura), juhlapäivät, paastokortti, Ramadan-laskuri
 - Qibla-kompassi, tasbih-laskuri, ilmoitukset ja oma adhan-ääni
-- Suomi / English, vaalea / tumma teema, kuukausitaulukko (CSV, tulostus)
+- 8 kieltä: suomi, English, العربية (RTL), Türkçe, Soomaali, فارسی (RTL), اردو (RTL), Bahasa Indonesia; vaalea / tumma teema, kuukausitaulukko (CSV, tulostus)
 
 **Huomio:** rukousaikojen ja Ramadanin alun vahvistaminen kuuluu aina paikalliselle pätevälle yhteisölle tai moskeijalle. Ilmoitukset toimivat vain, kun sivu on auki.
