@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b3d2e">
+<title>Rukousajat</title>
+<style>
+:root{--bg:#f4efe2;--card:#fffdf7;--ink:#14322a;--mut:#5d7068;--line:#e3dccb;--pri:#0f6b4f;--pri-ink:#fff;--deep:#0b3d2e;--gold:#b98a14;--hi:#e4f1e9;--cur:#fff4d6;--bad:#b3392f;--shadow:0 1px 2px rgba(20,50,42,.06),0 8px 24px rgba(20,50,42,.07);color-scheme:light}
+:root[data-theme=dark]{--bg:#07130e;--card:#0e1f18;--ink:#e8efe9;--mut:#93a89d;--line:#1d3329;--pri:#2fbf8f;--pri-ink:#04140d;--deep:#0b3d2e;--gold:#e2b94a;--hi:#123324;--cur:#2a2410;--bad:#ff8a7d;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+.ar{font-family:"Noto Naskh Arabic","Geeza Pro","Amiri","Traditional Arabic",serif;direction:rtl}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+#app{max-width:760px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 0 10px;gap:10px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.2px}
+.brand svg{width:26px;height:26px;color:var(--gold)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:14px;max-width:62vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip svg{width:16px;height:16px;flex:none;color:var(--pri)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px;margin:0 0 14px}
+.card h2{margin:0 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.hero{position:relative;overflow:hidden;color:#f3ead2;border-radius:22px;padding:18px 18px 16px;margin-bottom:14px;background:linear-gradient(155deg,#0b3d2e,#0f6b4f 70%,#138a64);box-shadow:var(--shadow)}
+.hero::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.07'%3E%3Crect x='12' y='12' width='36' height='36'/%3E%3Crect x='12' y='12' width='36' height='36' transform='rotate(45 30 30)'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.hero>*{position:relative}
+.hero .row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hero .date{font-size:14px;opacity:.9}
+.hero .hij{font-size:15px;color:#f1d27a;font-weight:600}
+.hero .clock{font-variant-numeric:tabular-nums;font-size:15px;opacity:.9;white-space:nowrap}
+.hero .lbl{margin-top:16px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.hero .nm{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hero .nm b{font-size:30px;line-height:1.1}
+.hero .nm .ar{font-size:26px;color:#f1d27a}
+.hero .tm{font-variant-numeric:tabular-nums;font-size:15px;opacity:.9}
+.hero .cd{font-variant-numeric:tabular-nums;font-size:42px;font-weight:700;letter-spacing:.5px;line-height:1.15}
+.bar{height:6px;border-radius:6px;background:rgba(255,255,255,.18);overflow:hidden;margin:10px 0 8px}
+.bar i{display:block;height:100%;width:0;background:#f1d27a;border-radius:6px;transition:width .6s linear}
+.hero .cur{font-size:14px;opacity:.92}
+.notice{border-radius:14px;padding:10px 14px;margin:0 0 14px;font-size:14px;border:1px solid var(--line);background:var(--card)}
+.notice.warn{border-color:#d9a441;background:var(--cur)}
+.notice button{margin-left:6px}
+.dnav{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-bottom:10px}
+.dnav .mid{text-align:center;flex:1;min-width:0}
+.dnav .mid b{display:block}
+.dnav .mid small{color:var(--gold);font-weight:600}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 12px;min-height:40px}
+.btn.pri{background:var(--pri);color:var(--pri-ink);border-color:var(--pri);font-weight:600}
+.btn.sm{padding:4px 10px;min-height:32px;font-size:14px}
+.btn:disabled{opacity:.5}
+.btn svg{width:18px;height:18px;vertical-align:-3px}
+.prayers{list-style:none;margin:0;padding:0}
+.prayers li{display:grid;grid-template-columns:1fr auto 40px;gap:8px;align-items:center;padding:11px 10px;border-radius:12px;border:1px solid transparent}
+.prayers li+li{margin-top:2px}
+.prayers .n{display:flex;flex-direction:column;min-width:0}
+.prayers .n b{font-size:17px}
+.prayers .n small{color:var(--mut)}
+.prayers .n .ar{font-size:18px;color:var(--gold);line-height:1.3;text-align:left;direction:ltr;unicode-bidi:plaintext}
+.prayers .t{font-variant-numeric:tabular-nums;font-size:22px;font-weight:600;text-align:right}
+.prayers li.minor .t{font-size:17px;font-weight:500;color:var(--mut)}
+.prayers li.minor .n b{font-size:15px;font-weight:500}
+.prayers li.past{opacity:.55}
+.prayers li.cur{background:var(--cur);border-color:#e1c36e;opacity:1}
+.prayers li.next{background:var(--hi);border-color:var(--pri);opacity:1}
+.prayers li.sep{border-top:1px dashed var(--line);border-radius:0;margin-top:6px;padding-top:12px}
+.bell{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;display:grid;place-items:center;color:var(--mut)}
+.bell svg{width:19px;height:19px}
+.bell.on{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.sup{color:var(--bad);font-size:12px;vertical-align:super;margin-left:2px;cursor:help}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:15px}
+.kv span:nth-child(odd){color:var(--mut)}
+.kv span:nth-child(even){text-align:right;font-variant-numeric:tabular-nums}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{border-radius:999px;padding:3px 10px;font-size:13px;background:var(--hi);color:var(--ink);border:1px solid var(--line)}
+.tag.gold{background:var(--cur);border-color:#e1c36e}
+table.m{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}
+table.m th,table.m td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+table.m th{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;background:var(--card)}
+table.m td:first-child,table.m th:first-child{text-align:left}
+table.m tr.today td{background:var(--cur);font-weight:700}
+table.m tr.fri td{color:var(--pri)}
+table.m td small{color:var(--mut);display:block;font-size:11px}
+.scroll{overflow-x:auto;margin:0 -6px;padding:0 6px}
+.compass{width:min(86vw,360px);display:block;margin:6px auto}
+.compass .ring line{stroke:var(--mut)}
+.compass .ring text{fill:var(--ink);font-weight:700;font-size:15px}
+.compass .face{fill:var(--card);stroke:var(--line);stroke-width:2}
+.compass.aligned .face{stroke:var(--pri);stroke-width:5}
+.big{font-size:44px;font-weight:700;font-variant-numeric:tabular-nums;text-align:center;line-height:1.1}
+.center{text-align:center}
+.mut{color:var(--mut)}
+.small{font-size:13px}
+.tb{display:grid;place-items:center;margin:14px auto;width:min(70vw,260px);aspect-ratio:1;border-radius:50%;border:8px solid var(--line);background:radial-gradient(circle at 35% 30%,var(--hi),var(--card));font-size:68px;font-weight:700;font-variant-numeric:tabular-nums;user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:var(--shadow);color:var(--ink)}
+.tb:active{transform:scale(.97)}
+.tb .ar{font-size:26px;color:var(--gold);display:block;text-align:center}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .h{font-size:12px;color:var(--mut);text-align:center;padding:4px 0;text-transform:uppercase}
+.cal .c{aspect-ratio:1/1.05;border:1px solid var(--line);border-radius:10px;padding:3px 4px;display:flex;flex-direction:column;justify-content:space-between;background:var(--card);font-variant-numeric:tabular-nums;min-width:0}
+.cal .c b{font-size:16px}
+.cal .c small{font-size:10.5px;color:var(--mut);text-align:right}
+.cal .c.fri{background:var(--hi)}
+.cal .c.today{outline:2px solid var(--pri)}
+.cal .c.ev{border-color:var(--gold)}
+.cal .c.ev b::after{content:"•";color:var(--gold);margin-left:2px}
+.cal .e{border:0;background:none}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.field:last-child{border-bottom:0}
+.field label,.field .lab{flex:1;min-width:0}
+.field .hint{display:block;font-size:12.5px;color:var(--mut)}
+.field select,.field input[type=number],.field input[type=text],.field input[type=date],.field input[type=search]{max-width:58%;min-width:110px;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:8px 10px;min-height:40px}
+.field input[type=number]{width:90px;min-width:0;text-align:right}
+.field input[type=checkbox]{width:22px;height:22px;accent-color:var(--pri)}
+.field.stack{display:block}
+.field.stack input,.field.stack select{max-width:100%;width:100%}
+.res{list-style:none;margin:6px 0 0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.res li{padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.res li:last-child{border-bottom:0}
+.res li:hover{background:var(--hi)}
+.res small{color:var(--mut)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.adj{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.adj label{display:flex;flex-direction:column;font-size:13px;color:var(--mut)}
+.adj input{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:8px;min-height:40px;text-align:center}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:20}
+nav .in{display:flex;width:100%;max-width:760px}
+nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--mut);padding:6px 0;border-radius:12px;min-width:0}
+nav button svg{width:24px;height:24px;stroke-width:1.8}
+nav button.on{color:var(--pri);font-weight:700}
+svg.i{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.9}
+#toast{position:fixed;left:12px;right:12px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:30;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+#toast div{pointer-events:auto;background:var(--deep);color:#f3ead2;padding:12px 16px;border-radius:14px;box-shadow:var(--shadow);max-width:520px;display:flex;gap:12px;align-items:center}
+#toast button{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:10px;padding:6px 10px}
+.legend{font-size:13px;color:var(--mut);margin-top:8px}
+details summary{cursor:pointer;font-weight:600;padding:6px 0}
+@media (max-width:560px){.field{flex-wrap:wrap}.field .lab{flex:1 1 150px}.field select,.field input[type=text]{max-width:100%;width:100%}table.m{font-size:13px}table.m th,table.m td{padding:7px 4px}}
+@media (max-width:420px){.hero .cd{font-size:36px}.hero .nm b{font-size:26px}.prayers .t{font-size:20px}.adj{grid-template-columns:repeat(2,1fr)}}
+@media print{nav,.top,.hero,.noprint,#toast{display:none!important}body{background:#fff;color:#000;padding:0}.card{box-shadow:none;border:0}table.m th{position:static}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top"><div class="brand"><svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/><path d="M17.5 4.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"/></svg><span id="brandName">Rukousajat</span></div><div id="locChip"></div></div>
+  <main id="view"></main>
+</div>
+<nav><div class="in" id="nav"></div></nav>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/*CORE-START*/
+const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
+const wrap = (x, n) => ((x % n) + n) % n;
+
+/* Sun position: Meeus ch. 25 (low-accuracy+nutation); error well under 0.01 deg => <1 s of time */
+function sunPos(jd) {
+  const T = (jd - 2451545) / 36525, T2 = T * T;
+  const L0 = wrap(280.4664567 + 36000.76983 * T + 0.0003032 * T2, 360);
+  const M = rad(wrap(357.52911 + 35999.05029 * T - 0.0001537 * T2, 360));
+  const Lm = rad(wrap(218.3164591 + 481267.88134236 * T, 360));
+  const Om = rad(wrap(125.04452 - 1934.136261 * T + 0.0020708 * T2 + T2 * T / 450000, 360));
+  const C = (1.914602 - 0.004817 * T - 0.000014 * T2) * Math.sin(M) + (0.019993 - 0.000101 * T) * Math.sin(2 * M) + 0.000289 * Math.sin(3 * M);
+  const lam = rad(L0 + C - 0.00569 - 0.00478 * Math.sin(Om));
+  const eps = rad(23.439291 - 0.013004167 * T - 0.000000164 * T2 + 0.0000005036 * T2 * T + 0.00256 * Math.cos(Om));
+  const decl = deg(Math.asin(Math.sin(eps) * Math.sin(lam)));
+  const ra = wrap(deg(Math.atan2(Math.cos(eps) * Math.sin(lam), Math.cos(lam))), 360);
+  const dpsi = (-17.2 * Math.sin(Om) - 1.32 * Math.sin(2 * rad(L0)) - 0.23 * Math.sin(2 * Lm) + 0.21 * Math.sin(2 * Om)) / 3600;
+  let E = L0 - 0.0057183 - ra + dpsi * Math.cos(eps);
+  E = wrap(E + 180, 360) - 180;
+  return { decl, eotH: E / 15 };
+}
+function hourAngle(alt, lat, decl) {
+  const c = (Math.sin(rad(alt)) - Math.sin(rad(lat)) * Math.sin(rad(decl))) / (Math.cos(rad(lat)) * Math.cos(rad(decl)));
+  return (c < -1 || c > 1 || isNaN(c)) ? NaN : deg(Math.acos(c)) / 15;
+}
+
+const METHODS = {
+  MWL:      { fajr: 18,   isha: 17 },
+  ISNA:     { fajr: 15,   isha: 15 },
+  EGYPT:    { fajr: 19.5, isha: 17.5 },
+  MAKKAH:   { fajr: 18.5, ishaInt: 90, ramExtra: 30 },
+  KARACHI:  { fajr: 18,   isha: 18 },
+  TEHRAN:   { fajr: 17.7, isha: 14,   maghribAng: 4.5 },
+  JAFARI:   { fajr: 16,   isha: 14,   maghribAng: 4 },
+  DIYANET:  { fajr: 18,   isha: 17,   adj: { sunrise: -7, dhuhr: 5, asr: 4, maghrib: 7 } },
+  GULF:     { fajr: 19.5, ishaInt: 90 },
+  KUWAIT:   { fajr: 18,   isha: 17.5 },
+  QATAR:    { fajr: 18,   ishaInt: 90 },
+  DUBAI:    { fajr: 18.2, isha: 18.2, adj: { sunrise: -3, dhuhr: 3, asr: 3, maghrib: 3 } },
+  SINGAPORE:{ fajr: 20,   isha: 18 },
+  FRANCE:   { fajr: 12,   isha: 12 },
+  RUSSIA:   { fajr: 16,   isha: 15 },
+  ALGERIA:  { fajr: 18,   isha: 17 },
+  TUNISIA:  { fajr: 18,   isha: 18 },
+  CUSTOM:   { fajr: 18,   isha: 17 }
+};
+
+const rawMemo = new Map();
+function rawDay(y, m, d, lat, lon, P) {
+  const key = [y, m, d, lat, lon, P.fajr, P.isha, P.maghribAng, P.asrF, P.elev].join('|');
+  if (rawMemo.has(key)) return rawMemo.get(key);
+  if (rawMemo.size > 4000) rawMemo.clear();
+  const base = Date.UTC(y, m - 1, d), jd0 = base / 864e5 + 2440587.5;
+  const sp = t => sunPos(jd0 + t / 24);
+  const noonT = 12 - lon / 15;
+  let tr = noonT;
+  for (let i = 0; i < 3; i++) tr = noonT - sp(tr).eotH;
+  const horizon = -0.8333 - (P.elev > 0 ? 0.0347 * Math.sqrt(P.elev) : 0);
+  const ev = (altFn, after) => {
+    let t = tr;
+    for (let i = 0; i < 5; i++) {
+      const s = sp(t), H = hourAngle(altFn(s.decl), lat, s.decl);
+      if (isNaN(H)) return NaN;
+      const T = noonT - s.eotH;
+      t = after ? T + H : T - H;
+    }
+    return t;
+  };
+  const ms = t => isNaN(t) ? NaN : base + t * 36e5;
+  const out = {
+    transit: ms(tr),
+    sunrise: ms(ev(() => horizon, false)),
+    sunset: ms(ev(() => horizon, true)),
+    fajr: P.fajr != null ? ms(ev(() => -P.fajr, false)) : NaN,
+    isha: P.isha != null ? ms(ev(() => -P.isha, true)) : NaN,
+    maghribAng: P.maghribAng != null ? ms(ev(() => -P.maghribAng, true)) : NaN,
+    asr: ms(ev(dec => deg(Math.atan(1 / (P.asrF + Math.tan(rad(Math.abs(lat - dec)))))), true))
+  };
+  const sNoon = sp(tr);
+  const maxAlt = 90 - Math.abs(lat - sNoon.decl);
+  out.polar = isNaN(out.sunrise) || isNaN(out.sunset) ? (maxAlt > horizon ? 'day' : 'night') : null;
+  rawMemo.set(key, out);
+  return out;
+}
+
+function rnd(ms, k, mode) {
+  if (isNaN(ms)) return NaN;
+  if (mode === 'none') return Math.round(ms / 1000) * 1000;
+  if (mode === 'safe') {
+    if (k === 'sunrise' || k === 'imsak') return Math.floor(ms / 60000) * 60000;
+    if (k === 'fajr' || k === 'dhuhr' || k === 'asr' || k === 'maghrib' || k === 'isha') return Math.ceil(ms / 60000 - 1e-9) * 60000;
+  }
+  return Math.round(ms / 60000) * 60000;
+}
+
+/* c = {lat,lon,fajrAng,ishaAng,ishaInt,ramExtra,maghribAng,asrF,elev,highLat,adjM,adjU,imsak,rounding,midnight,isRamadan} */
+function calcBase(y, m, d, c) {
+  const P = { fajr: c.fajrAng, isha: c.ishaInt ? null : c.ishaAng, maghribAng: c.maghribAng, asrF: c.asrF, elev: c.elev };
+  const r = rawDay(y, m, d, c.lat, c.lon, P);
+  const rp = rawDay(y, m, d - 1, c.lat, c.lon, P);
+  const rn = rawDay(y, m, d + 1, c.lat, c.lon, P);
+  let fajr = r.fajr, isha = r.isha;
+  const flags = { fajr: false, isha: false };
+  if (c.highLat !== 'none' && c.highLat !== 'nearest') {
+    const portion = (ang, n) => c.highLat === 'middle' ? n / 2 : c.highLat === 'seventh' ? n / 7 : n * ang / 60;
+    const safeF = r.sunrise - portion(c.fajrAng, r.sunrise - rp.sunset);
+    if (isNaN(fajr) || fajr < safeF) { if (!isNaN(safeF)) { fajr = safeF; flags.fajr = true; } }
+    if (!c.ishaInt) {
+      const safeI = r.sunset + portion(c.ishaAng, rn.sunrise - r.sunset);
+      if (isNaN(isha) || isha > safeI) { if (!isNaN(safeI)) { isha = safeI; flags.isha = true; } }
+    }
+  }
+  const maghribRaw = c.maghribAng != null ? r.maghribAng : r.sunset;
+  if (c.ishaInt) isha = r.sunset + (c.ishaInt + (c.isRamadan && c.isRamadan(y, m, d) ? (c.ramExtra || 0) : 0)) * 60000;
+  const a = k => ((c.adjM && c.adjM[k]) || 0) + ((c.adjU && c.adjU[k]) || 0);
+  const u = {
+    fajr: fajr + a('fajr') * 6e4, sunrise: r.sunrise + a('sunrise') * 6e4, dhuhr: r.transit + a('dhuhr') * 6e4,
+    asr: r.asr + a('asr') * 6e4, maghrib: maghribRaw + a('maghrib') * 6e4, isha: isha + a('isha') * 6e4
+  };
+  u.imsak = u.fajr - c.imsak * 6e4;
+  const t = {};
+  for (const k in u) t[k] = rnd(u[k], k, c.rounding);
+  return { t, u, raw: r, flags };
+}
+
+function calcDay(y, m, d, c) {
+  const b = calcBase(y, m, d, c), n = calcBase(y, m, d + 1, c);
+  const t = Object.assign({}, b.t);
+  const nEnd = c.midnight === 'sunrise' ? n.t.sunrise : (isNaN(n.t.fajr) ? n.t.sunrise : n.t.fajr);
+  t.midnight = rnd((t.maghrib + nEnd) / 2, 'x', c.rounding === 'none' ? 'none' : 'nearest');
+  t.lastThird = rnd(nEnd - (nEnd - t.maghrib) / 3, 'x', c.rounding === 'none' ? 'none' : 'nearest');
+  t.ishraq = t.sunrise + 15 * 6e4;
+  return {
+    y, m, d, t, flags: b.flags, polar: b.raw.polar,
+    dayLen: b.raw.sunset - b.raw.sunrise,
+    nearest: c.highLat === 'nearest'
+  };
+}
+
+const KAABA = { lat: 21.422487, lon: 39.826206 };
+function qiblaBearing(lat, lon) {
+  const p1 = rad(lat), p2 = rad(KAABA.lat), dl = rad(KAABA.lon - lon);
+  return wrap(deg(Math.atan2(Math.sin(dl) * Math.cos(p2), Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl))), 360);
+}
+function distKm(lat, lon) {
+  const p1 = rad(lat), p2 = rad(KAABA.lat), dp = p2 - p1, dl = rad(KAABA.lon - lon);
+  const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  return 6371.0088 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+/* tabular (civil) Hijri fallback if the browser has no Umm al-Qura calendar */
+function civilHijri(jdn) {
+  let l = jdn - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  l = l - 10631 * n + 354;
+  const j = Math.floor((10985 - l) / 5316) * Math.floor(50 * l / 17719) + Math.floor(l / 5670) * Math.floor(43 * l / 15238);
+  l = l - Math.floor((30 - j) / 15) * Math.floor(17719 * j / 50) - Math.floor(j / 16) * Math.floor(15238 * j / 43) + 29;
+  const mo = Math.floor(24 * l / 709);
+  return { d: l - Math.floor(709 * mo / 24), m: mo, y: 30 * n + j - 30 };
+}
+/*CORE-END*/
+
+/* ============================ helpers & state ============================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const LSK = 'rukousajat.v1', LSK_TB = 'rukousajat.tasbih', LSK_FIRED = 'rukousajat.fired';
+const DEF = {
+  lang: 'fi', theme: 'auto', h12: false, locSet: false, methodTouched: false,
+  loc: { name: 'Helsinki', cc: 'FI', lat: 60.1699, lon: 24.9384, tz: 'Europe/Helsinki', elev: 0 },
+  method: 'MWL', asr: 'standard', highLat: 'angle', customFajr: 18, customIsha: 17, customIshaInt: 0,
+  imsak: 10, rounding: 'nearest', midnight: 'fajr', useElev: false,
+  adj: { fajr: 0, sunrise: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 },
+  hijriAdj: 0, hijriAfterMaghrib: true, showImsak: true, showExtras: true, showForbidden: true, fastAlways: false,
+  alerts: { on: false, pre: 0, sound: 'chime', volume: 80, p: { fajr: true, sunrise: false, dhuhr: true, asr: true, maghrib: true, isha: true } }
+};
+function merge(a, b) { for (const k in b) { if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object') merge(a[k], b[k]); else a[k] = b[k]; } return a; }
+function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+let S = merge(clone(DEF), lsGet(LSK) || {});
+const save = () => lsSet(LSK, S);
+const L = (fi, en) => S.lang === 'en' ? en : fi;
+let VIEW = 'today', SEL = null, MSEL = null, HSEL = null, CFG = null, dayCache = new Map();
+
+const PN = {
+  imsak: { ar: 'الإمساك', fi: 'Imsak', en: 'Imsak', d: ['Paaston alun varoaika', 'Pre-dawn caution'] },
+  fajr: { ar: 'الفجر', fi: 'Fajr', en: 'Fajr', d: ['Aamurukous', 'Dawn prayer'] },
+  sunrise: { ar: 'الشروق', fi: 'Auringonnousu', en: 'Sunrise', d: ['Fajr-aika päättyy', 'End of Fajr time'] },
+  ishraq: { ar: 'الإشراق · الضحى', fi: 'Ishraq / Duha', en: 'Ishraq / Duha', d: ['Vapaaehtoinen aamupäivärukous alkaa', 'Voluntary forenoon prayer begins'] },
+  dhuhr: { ar: 'الظهر', fi: 'Dhuhr', en: 'Dhuhr', d: ['Keskipäivärukous', 'Midday prayer'] },
+  jumuah: { ar: 'الجمعة', fi: "Jumu'ah", en: "Jumu'ah", d: ['Perjantain yhteisrukous', 'Friday congregational prayer'] },
+  asr: { ar: 'العصر', fi: 'Asr', en: 'Asr', d: ['Iltapäivärukous', 'Afternoon prayer'] },
+  maghrib: { ar: 'المغرب', fi: 'Maghrib', en: 'Maghrib', d: ['Auringonlaskun rukous', 'Sunset prayer'] },
+  isha: { ar: 'العشاء', fi: 'Isha', en: 'Isha', d: ['Yörukous', 'Night prayer'] },
+  midnight: { ar: 'منتصف الليل', fi: 'Islamilainen keskiyö', en: 'Islamic midnight', d: ['Yön puoliväli', 'Middle of the night'] },
+  lastThird: { ar: 'الثلث الأخير', fi: 'Yön viimeinen kolmannes', en: 'Last third of night', d: ['Tahajjud-rukouksen paras aika', 'Best time for Tahajjud'] }
+};
+const pn = (k, fri) => { const o = PN[k === 'dhuhr' && fri ? 'jumuah' : k]; return { ar: o.ar, name: S.lang === 'en' ? o.en : o.fi, d: S.lang === 'en' ? o.d[1] : o.d[0] }; };
+const PRAYERS = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
+const METHOD_INFO = {
+  MWL: ['Muslim World League (MWL)', 'Fajr 18° · Isha 17° — Eurooppa, Lähi-itä, Kaukoitä'],
+  ISNA: ['ISNA (Pohjois-Amerikka)', 'Fajr 15° · Isha 15°'],
+  EGYPT: ['Egyptin yleinen mittausvirasto', 'Fajr 19,5° · Isha 17,5°'],
+  MAKKAH: ['Umm al-Qura, Mekka', 'Fajr 18,5° · Isha 90 min Maghribista (120 min ramadanina)'],
+  KARACHI: ['Karachin islamilaisten tieteiden yliopisto', 'Fajr 18° · Isha 18°'],
+  TEHRAN: ['Teheranin yliopisto (shia, Jafari)', 'Fajr 17,7° · Isha 14° · Maghrib 4,5°'],
+  JAFARI: ['Shia Ithna-Ashari (Leva, Qom)', 'Fajr 16° · Isha 14° · Maghrib 4°'],
+  DIYANET: ['Diyanet, Turkki', 'Fajr 18° · Isha 17° · varoajat: aurinko −7, Dhuhr +5, Asr +4, Maghrib +7 min'],
+  GULF: ['Persianlahden alue', 'Fajr 19,5° · Isha 90 min Maghribista'],
+  KUWAIT: ['Kuwait', 'Fajr 18° · Isha 17,5°'],
+  QATAR: ['Qatar', 'Fajr 18° · Isha 90 min Maghribista'],
+  DUBAI: ['Dubai / Arabiemiirikunnat', 'Fajr 18,2° · Isha 18,2° · varoajat +3 min'],
+  SINGAPORE: ['Singapore · Malesia · Indonesia', 'Fajr 20° · Isha 18°'],
+  FRANCE: ['UOIF, Ranska', 'Fajr 12° · Isha 12°'],
+  RUSSIA: ['Venäjän muslimien hengellinen hallinto', 'Fajr 16° · Isha 15°'],
+  ALGERIA: ['Algeria', 'Fajr 18° · Isha 17°'],
+  TUNISIA: ['Tunisia', 'Fajr 18° · Isha 18°'],
+  CUSTOM: ['Oma (omat kulmat)', 'Syötä omat Fajr- ja Isha-kulmat']
+};
+const CC_METHOD = { TR: 'DIYANET', SA: 'MAKKAH', EG: 'EGYPT', PK: 'KARACHI', IN: 'KARACHI', BD: 'KARACHI', AF: 'KARACHI', IR: 'TEHRAN', US: 'ISNA', CA: 'ISNA', KW: 'KUWAIT', QA: 'QATAR', AE: 'DUBAI', BH: 'GULF', OM: 'GULF', SG: 'SINGAPORE', MY: 'SINGAPORE', ID: 'SINGAPORE', BN: 'SINGAPORE', FR: 'FRANCE', RU: 'RUSSIA', DZ: 'ALGERIA', TN: 'TUNISIA' };
+
+const CITIES = [
+  ['Helsinki','FI',60.17,24.94,'Europe/Helsinki'],['Espoo','FI',60.21,24.66,'Europe/Helsinki'],['Vantaa','FI',60.29,25.04,'Europe/Helsinki'],['Tampere','FI',61.50,23.76,'Europe/Helsinki'],['Turku','FI',60.45,22.27,'Europe/Helsinki'],['Oulu','FI',65.01,25.47,'Europe/Helsinki'],['Jyväskylä','FI',62.24,25.75,'Europe/Helsinki'],['Lahti','FI',60.98,25.66,'Europe/Helsinki'],['Kuopio','FI',62.89,27.68,'Europe/Helsinki'],['Pori','FI',61.48,21.80,'Europe/Helsinki'],['Vaasa','FI',63.10,21.62,'Europe/Helsinki'],['Joensuu','FI',62.60,29.76,'Europe/Helsinki'],['Rovaniemi','FI',66.50,25.73,'Europe/Helsinki'],['Kotka','FI',60.47,26.95,'Europe/Helsinki'],['Lappeenranta','FI',61.06,28.19,'Europe/Helsinki'],['Mikkeli','FI',61.69,27.27,'Europe/Helsinki'],['Kajaani','FI',64.23,27.73,'Europe/Helsinki'],['Seinäjoki','FI',62.79,22.84,'Europe/Helsinki'],['Hämeenlinna','FI',60.99,24.46,'Europe/Helsinki'],['Porvoo','FI',60.39,25.67,'Europe/Helsinki'],['Kemi','FI',65.74,24.56,'Europe/Helsinki'],['Mariehamn','AX',60.10,19.94,'Europe/Mariehamn'],
+  ['Mekka (Makkah)','SA',21.4225,39.8262,'Asia/Riyadh'],['Medina','SA',24.47,39.61,'Asia/Riyadh'],['Riyadh','SA',24.71,46.68,'Asia/Riyadh'],['Jeddah','SA',21.54,39.17,'Asia/Riyadh'],['Jerusalem','PS',31.77,35.21,'Asia/Jerusalem'],['Istanbul','TR',41.01,28.98,'Europe/Istanbul'],['Ankara','TR',39.93,32.86,'Europe/Istanbul'],['Kairo (Cairo)','EG',30.04,31.24,'Africa/Cairo'],['Dubai','AE',25.20,55.27,'Asia/Dubai'],['Abu Dhabi','AE',24.45,54.38,'Asia/Dubai'],['Doha','QA',25.29,51.53,'Asia/Qatar'],['Kuwait City','KW',29.38,47.99,'Asia/Kuwait'],['Manama','BH',26.23,50.59,'Asia/Bahrain'],['Muscat','OM',23.59,58.41,'Asia/Muscat'],['Sanaa','YE',15.37,44.19,'Asia/Aden'],['Bagdad','IQ',33.31,44.37,'Asia/Baghdad'],['Teheran','IR',35.69,51.39,'Asia/Tehran'],['Damaskos','SY',33.51,36.29,'Asia/Damascus'],['Beirut','LB',33.89,35.50,'Asia/Beirut'],['Amman','JO',31.95,35.93,'Asia/Amman'],['Karachi','PK',24.86,67.01,'Asia/Karachi'],['Lahore','PK',31.55,74.34,'Asia/Karachi'],['Islamabad','PK',33.68,73.05,'Asia/Karachi'],['Dhaka','BD',23.81,90.41,'Asia/Dhaka'],['Delhi','IN',28.61,77.21,'Asia/Kolkata'],['Kabul','AF',34.53,69.17,'Asia/Kabul'],['Taškent','UZ',41.30,69.24,'Asia/Tashkent'],['Baku','AZ',40.41,49.87,'Asia/Baku'],['Jakarta','ID',-6.21,106.85,'Asia/Jakarta'],['Kuala Lumpur','MY',3.14,101.69,'Asia/Kuala_Lumpur'],['Singapore','SG',1.35,103.82,'Asia/Singapore'],
+  ['Casablanca','MA',33.57,-7.59,'Africa/Casablanca'],['Alger','DZ',36.75,3.06,'Africa/Algiers'],['Tunis','TN',36.81,10.18,'Africa/Tunis'],['Tripoli','LY',32.89,13.19,'Africa/Tripoli'],['Khartum','SD',15.50,32.56,'Africa/Khartoum'],['Mogadishu','SO',2.05,45.32,'Africa/Mogadishu'],['Addis Abeba','ET',9.03,38.74,'Africa/Addis_Ababa'],['Nairobi','KE',-1.29,36.82,'Africa/Nairobi'],['Lagos','NG',6.52,3.38,'Africa/Lagos'],['Kapkaupunki','ZA',-33.92,18.42,'Africa/Johannesburg'],
+  ['Lontoo (London)','GB',51.51,-0.13,'Europe/London'],['Pariisi (Paris)','FR',48.86,2.35,'Europe/Paris'],['Berliini','DE',52.52,13.41,'Europe/Berlin'],['Tukholma (Stockholm)','SE',59.33,18.07,'Europe/Stockholm'],['Oslo','NO',59.91,10.75,'Europe/Oslo'],['Kööpenhamina','DK',55.68,12.57,'Europe/Copenhagen'],['Amsterdam','NL',52.37,4.90,'Europe/Amsterdam'],['Bryssel','BE',50.85,4.35,'Europe/Brussels'],['Madrid','ES',40.42,-3.70,'Europe/Madrid'],['Rooma','IT',41.90,12.50,'Europe/Rome'],['Wien','AT',48.21,16.37,'Europe/Vienna'],['Moskova','RU',55.76,37.62,'Europe/Moscow'],['Kazan','RU',55.79,49.12,'Europe/Moscow'],['Tallinna','EE',59.44,24.75,'Europe/Tallinn'],['Riika','LV',56.95,24.11,'Europe/Riga'],['Reykjavik','IS',64.15,-21.94,'Atlantic/Reykjavik'],['Sarajevo','BA',43.86,18.41,'Europe/Sarajevo'],['Tirana','AL',41.33,19.82,'Europe/Tirane'],
+  ['New York','US',40.71,-74.01,'America/New_York'],['Chicago','US',41.88,-87.63,'America/Chicago'],['Los Angeles','US',34.05,-118.24,'America/Los_Angeles'],['Toronto','CA',43.65,-79.38,'America/Toronto'],['Sydney','AU',-33.87,151.21,'Australia/Sydney']
+].map(a => ({ name: a[0], cc: a[1], lat: a[2], lon: a[3], tz: a[4], elev: 0 }));
+
+/* ---------- time zone helpers ---------- */
+const fmtCache = {};
+function parts(ms, tz) {
+  let f = fmtCache[tz];
+  if (!f) f = fmtCache[tz] = new Intl.DateTimeFormat('en-GB', { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hourCycle: 'h23' });
+  const o = {};
+  for (const p of f.formatToParts(ms)) if (p.type !== 'literal') o[p.type] = +p.value;
+  return { y: o.year, m: o.month, d: o.day, h: o.hour === 24 ? 0 : o.hour, mi: o.minute, s: o.second };
+}
+const tzOK = tz => { try { new Intl.DateTimeFormat('en', { timeZone: tz }); return true; } catch (e) { return false; } };
+const dateIn = (ms, tz) => { const p = parts(ms, tz); return { y: p.y, m: p.m, d: p.d }; };
+const addDays = (o, n) => { const dt = new Date(Date.UTC(o.y, o.m - 1, o.d + n)); return { y: dt.getUTCFullYear(), m: dt.getUTCMonth() + 1, d: dt.getUTCDate() }; };
+const sameDay = (a, b) => a.y === b.y && a.m === b.m && a.d === b.d;
+const dow = o => new Date(Date.UTC(o.y, o.m - 1, o.d)).getUTCDay();
+const pad = n => String(n).padStart(2, '0');
+function fmtT(ms, opt = {}) {
+  if (!isFinite(ms)) return '—';
+  const p = parts(ms, S.loc.tz), sec = opt.sec || S.rounding === 'none';
+  let h = p.h, suf = '';
+  if (S.h12) { suf = ' ' + (h >= 12 ? 'PM' : 'AM'); h = ((h + 11) % 12) + 1; }
+  return (S.h12 ? h : pad(h)) + ':' + pad(p.mi) + (sec ? ':' + pad(p.s) : '') + suf;
+}
+function fmtDur(ms) {
+  ms = Math.max(0, Math.round(ms / 1000));
+  const h = Math.floor(ms / 3600), m = Math.floor(ms % 3600 / 60), s = ms % 60;
+  return pad(h) + ':' + pad(m) + ':' + pad(s);
+}
+function fmtHM(ms) { if (!isFinite(ms)) return '—'; const m = Math.round(ms / 60000); return Math.floor(m / 60) + ' h ' + pad(m % 60) + ' min'; }
+const locale = () => S.lang === 'en' ? 'en-GB' : 'fi-FI';
+function fmtDate(o, opt) { return new Intl.DateTimeFormat(locale(), Object.assign({ timeZone: 'UTC' }, opt)).format(Date.UTC(o.y, o.m - 1, o.d, 12)); }
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* ---------- Hijri ---------- */
+const HM_AR = ['محرم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'];
+const HM_LAT = ['Muharram', 'Safar', "Rabi' al-awwal", "Rabi' al-thani", 'Jumada al-awwal', 'Jumada al-thani', 'Rajab', "Sha'ban", 'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah'];
+let HF = null;
+try {
+  const f = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  if (f.resolvedOptions().calendar === 'islamic-umalqura') HF = f;
+} catch (e) { }
+const hCache = new Map();
+function hijri(o, extra = 0) {
+  const dt = new Date(Date.UTC(o.y, o.m - 1, o.d + S.hijriAdj + extra, 12)), k = dt.getTime();
+  if (hCache.has(k)) return hCache.get(k);
+  let r = {};
+  if (HF) { for (const p of HF.formatToParts(dt)) { if (p.type === 'day') r.d = +p.value; else if (p.type === 'month') r.m = +p.value; else if (p.type === 'year' || p.type === 'relatedYear') r.y = +p.value; } }
+  else r = civilHijri(Math.round(k / 864e5 + 2440587.5));
+  hCache.set(k, r);
+  return r;
+}
+const hStr = h => h.d + ' ' + HM_LAT[h.m - 1] + ' ' + h.y;
+const EVENTS = [
+  [1, 1, 'newYear', 'Islamilainen uusi vuosi', 'Islamic New Year'], [1, 9, 'tasua', "Tasu'a (paastopäivä)", "Tasu'a (fast day)"], [1, 10, 'ashura', 'Ashura (paastopäivä)', 'Ashura (fast day)'],
+  [3, 12, 'mawlid', 'Mawlid an-Nabi (profeetan syntymä)', 'Mawlid an-Nabi'], [7, 27, 'isra', "Isra ja Mi'raj", "Isra and Mi'raj"], [8, 15, 'shaban', "Nisf Sha'ban (Berat)", "Mid-Sha'ban"],
+  [9, 1, 'ramadan', 'Ramadan alkaa', 'Ramadan begins'], [9, 27, 'qadr', 'Laylat al-Qadr (todennäköisin 27. yö)', 'Laylat al-Qadr (likely 27th night)'], [10, 1, 'eidFitr', 'Eid al-Fitr', 'Eid al-Fitr'],
+  [12, 8, 'tarwiyah', 'Tarwiyah (Hajj alkaa)', 'Day of Tarwiyah'], [12, 9, 'arafah', 'Arafah (paastopäivä)', 'Day of Arafah (fast day)'], [12, 10, 'eidAdha', 'Eid al-Adha', 'Eid al-Adha'], [12, 11, 'tashriq', 'Tashriq-päivä', 'Days of Tashriq'], [12, 12, 'tashriq', 'Tashriq-päivä', 'Days of Tashriq'], [12, 13, 'tashriq', 'Tashriq-päivä', 'Days of Tashriq']
+];
+const eventsOf = h => EVENTS.filter(e => e[0] === h.m && e[1] === h.d).map(e => ({ key: e[2], label: L(e[3], e[4]), big: ['eidFitr', 'eidAdha', 'ramadan', 'newYear'].includes(e[2]) }));
+function fastInfo(o) {
+  const h = hijri(o), wd = dow(o), ev = [];
+  if (h.m === 9) return { type: 'ramadan', label: L('Ramadan — pakollinen paasto (fard)', 'Ramadan — obligatory fast') };
+  if ((h.m === 10 && h.d === 1) || (h.m === 12 && h.d >= 10 && h.d <= 13)) return { type: 'haram', label: L('Paastoa ei sallita (Eid / Tashriq)', 'Fasting is not permitted (Eid / Tashriq)') };
+  if (h.m === 12 && h.d === 9) ev.push(L('Arafah-päivä', 'Day of Arafah'));
+  if (h.m === 1 && (h.d === 9 || h.d === 10)) ev.push(h.d === 10 ? 'Ashura' : "Tasu'a");
+  if (h.d >= 13 && h.d <= 15) ev.push(L('Valkoiset päivät (Ayyam al-Bid)', 'White days (Ayyam al-Bid)'));
+  if (h.m === 10 && h.d >= 2) ev.push(L('Shawwalin kuusi päivää', 'Six days of Shawwal'));
+  if (wd === 1 || wd === 4) ev.push(wd === 1 ? L('Maanantai', 'Monday') : L('Torstai', 'Thursday'));
+  return ev.length ? { type: 'sunnah', label: L('Suositeltu vapaaehtoinen paasto (sunna): ', 'Recommended voluntary fast (sunnah): ') + ev.join(', ') } : null;
+}
+
+/* ---------- configuration & caching ---------- */
+function rebuildCfg() {
+  const M = METHODS[S.method] || METHODS.MWL;
+  let fajrAng = M.fajr, ishaAng = M.isha, ishaInt = M.ishaInt || 0;
+  if (S.method === 'CUSTOM') { fajrAng = S.customFajr; ishaAng = S.customIsha; ishaInt = S.customIshaInt > 0 ? S.customIshaInt : 0; }
+  let lat = S.loc.lat;
+  if (S.highLat === 'nearest' && Math.abs(lat) > 48.5) lat = Math.sign(lat) * 48.5;
+  CFG = {
+    lat, lon: S.loc.lon, fajrAng, ishaAng, ishaInt, ramExtra: M.ramExtra || 0, maghribAng: M.maghribAng != null ? M.maghribAng : null,
+    asrF: S.asr === 'hanafi' ? 2 : 1, elev: S.useElev ? Math.max(0, S.loc.elev || 0) : 0, highLat: S.highLat,
+    adjM: M.adj || {}, adjU: S.adj, imsak: S.imsak, rounding: S.rounding, midnight: S.midnight,
+    isRamadan: (y, m, d) => hijri({ y, m, d }).m === 9
+  };
+  dayCache.clear();
+}
+function getDay(o) {
+  const k = o.y + '-' + o.m + '-' + o.d;
+  let r = dayCache.get(k);
+  if (!r) { r = calcDay(o.y, o.m, o.d, CFG); if (dayCache.size > 200) dayCache.clear(); dayCache.set(k, r); }
+  return r;
+}
+const today = () => dateIn(Date.now(), S.loc.tz);
+
+function liveState(now) {
+  const td = dateIn(now, S.loc.tz);
+  const ev = [];
+  [-1, 0, 1].forEach(n => { const dd = getDay(addDays(td, n)); PRAYERS.forEach(k => { const t = dd.t[k]; if (isFinite(t)) ev.push({ k, t }); }); });
+  ev.sort((a, b) => a.t - b.t);
+  let ci = -1;
+  ev.forEach((e, i) => { if (e.t <= now) ci = i; });
+  let cur = ev[ci] || null, nextP = null, curP = null, nextE = ev[ci + 1] || null;
+  for (const e of ev) { if (e.k === 'sunrise') continue; if (e.t > now) { nextP = e; break; } curP = e; }
+  return { td, cur, curP, nextP, nextE, ev };
+}
+
+/* ============================ audio, alerts ============================ */
+let AC = null, customURL = null, playing = null;
+function getAC() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; } catch (e) { return null; } }
+function chime(vol = 0.8) {
+  const ac = getAC(); if (!ac) return;
+  const t0 = ac.currentTime + 0.02;
+  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t0 + i * 0.4);
+    g.gain.exponentialRampToValueAtTime(0.35 * vol, t0 + i * 0.4 + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + i * 0.4 + 1.8);
+    o.connect(g).connect(ac.destination); o.start(t0 + i * 0.4); o.stop(t0 + i * 0.4 + 1.9);
+  });
+}
+function stopSound() { if (playing) { try { playing.pause(); } catch (e) { } playing = null; } }
+function playSound(pre) {
+  const v = S.alerts.volume / 100;
+  if (S.alerts.sound === 'off') return;
+  if (S.alerts.sound === 'custom' && customURL && !pre) {
+    stopSound(); const a = new Audio(customURL); a.volume = v; playing = a; a.play().catch(() => chime(v)); return;
+  }
+  chime(v);
+}
+const IDBN = 'rukousajat';
+const idbOpen = () => new Promise((res, rej) => { const r = indexedDB.open(IDBN, 1); r.onupgradeneeded = () => r.result.createObjectStore('f'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+async function idbPut(k, v) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction('f', 'readwrite'); tx.objectStore('f').put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
+async function idbGet(k) { const db = await idbOpen(); return new Promise((res, rej) => { const r = db.transaction('f').objectStore('f').get(k); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function idbDel(k) { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction('f', 'readwrite'); tx.objectStore('f').delete(k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); }
+async function loadCustomAudio() { try { const b = await idbGet('adhan'); if (b) { customURL = URL.createObjectURL(b); S._hasCustom = true; } } catch (e) { } }
+
+let FIRED = lsGet(LSK_FIRED) || {};
+function toast(msg, action) {
+  const box = $('#toast'), el = document.createElement('div');
+  el.innerHTML = '<span>' + esc(msg) + '</span>';
+  if (action) { const b = document.createElement('button'); b.textContent = action.label; b.onclick = () => { action.fn(); el.remove(); }; el.appendChild(b); }
+  box.appendChild(el);
+  setTimeout(() => el.remove(), action ? 60000 : 4500);
+}
+function notify(k, type, t) {
+  const fri = dow(today()) === 5, name = pn(k, fri).name, time = fmtT(t);
+  const title = type === 'pre' ? L(name + ' alkaa ' + S.alerts.pre + ' min kuluttua', name + ' in ' + S.alerts.pre + ' min') : (k === 'sunrise' ? L('Aurinko nousee', 'Sunrise') : L(name + '-rukouksen aika', 'Time for ' + name));
+  const body = S.loc.name + ' · ' + time;
+  toast(title + ' · ' + time, S.alerts.sound !== 'off' ? { label: L('Hiljennä', 'Stop'), fn: stopSound } : null);
+  if (S.alerts.sound !== 'off') playSound(type === 'pre');
+  try { if ('Notification' in window && Notification.permission === 'granted') new Notification(title, { body, tag: 'ra-' + k + type }); } catch (e) { }
+}
+function checkAlerts(now) {
+  if (!S.alerts.on) return;
+  const td = today(), day = getDay(td), dk = td.y + '-' + td.m + '-' + td.d;
+  let changed = false;
+  PRAYERS.forEach(k => {
+    if (!S.alerts.p[k]) return;
+    const t = day.t[k]; if (!isFinite(t)) return;
+    [['at', t], ['pre', t - S.alerts.pre * 6e4]].forEach(([type, tt]) => {
+      if (type === 'pre' && S.alerts.pre <= 0) return;
+      const id = dk + k + type;
+      if (now >= tt && now - tt < 150000 && !FIRED[id]) { FIRED[id] = 1; changed = true; notify(k, type, t); }
+    });
+  });
+  if (changed) { for (const id in FIRED) if (!id.startsWith(dk)) delete FIRED[id]; lsSet(LSK_FIRED, FIRED); }
+}
+
+/* ============================ icons ============================ */
+const IC = {
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', table: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', moon: '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+  count: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>', gear: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',
+  bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7z"/><path d="M10 20a2 2 0 0 0 4 0"/>', pin: '<path d="M12 21s7-6.3 7-11.5A7 7 0 0 0 5 9.5C5 14.700 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  left: '<path d="M15 5l-7 7 7 7"/>', right: '<path d="M9 5l7 7-7 7"/>', gps: '<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'
+};
+const svg = (n, cls = '') => '<svg class="i ' + cls + '" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>';
+
+/* ============================ views ============================ */
+function vToday() {
+  const now = Date.now(), live = liveState(now), td = live.td;
+  const sel = SEL || td, isToday = sameDay(sel, td), day = getDay(sel), fri = dow(sel) === 5;
+  const hSel = hijri(sel), hLive = hijri(td, S.hijriAfterMaghrib && getDay(td).t.maghrib <= now ? 1 : 0);
+  let out = '';
+  if (!S.locSet) out += '<div class="notice warn">' + L('Näytetään oletussijainti <b>Helsinki</b>. Valitse oma sijaintisi tarkkoja aikoja varten.', 'Showing the default location <b>Helsinki</b>. Choose your location for accurate times.') + ' <button class="btn sm pri" data-act="gps">' + L('Käytä sijaintiani', 'Use my location') + '</button> <button class="btn sm" data-act="nav" data-v="settings">' + L('Hae kaupunki', 'Search city') + '</button></div>';
+  if (!tzOK(S.loc.tz)) out += '<div class="notice warn">' + L('Aikavyöhyke on virheellinen — korjaa se asetuksissa.', 'Invalid time zone — fix it in settings.') + '</div>';
+  /* hero */
+  const nx = live.nextP, cr = live.cur;
+  let heroMid = '';
+  if (nx) {
+    const nm = pn(nx.k, dow(dateIn(nx.t, S.loc.tz)) === 5);
+    const prevT = live.curP ? live.curP.t : nx.t - 6 * 36e5, pct = Math.min(100, Math.max(0, (now - prevT) / (nx.t - prevT) * 100));
+    heroMid = '<div class="lbl">' + L('Seuraava rukous', 'Next prayer') + '</div><div class="nm"><b>' + esc(nm.name) + '</b><span class="ar">' + nm.ar + '</span><span class="tm">' + fmtT(nx.t) + '</span></div><div class="cd" id="cd">' + fmtDur(nx.t - now) + '</div><div class="bar"><i id="bar" style="width:' + pct.toFixed(1) + '%"></i></div>';
+  } else heroMid = '<div class="lbl">' + L('Ei laskettavia aikoja', 'No computable times') + '</div>';
+  let curLine = '';
+  if (cr && live.nextE) {
+    const cn = pn(cr.k, dow(dateIn(cr.t, S.loc.tz)) === 5), en = pn(live.nextE.k, dow(dateIn(live.nextE.t, S.loc.tz)) === 5);
+    if (cr.k === 'sunrise') curLine = L('Aurinko on noussut — Fajr-aika päättyi klo ' + fmtT(cr.t) + '. Seuraava: ' + en.name, 'Sunrise has passed (' + fmtT(cr.t) + '). Next: ' + en.name);
+    else curLine = L('Nyt: <b>' + cn.name + '</b> — päättyy: ' + en.name + ' klo ' + fmtT(live.nextE.t), 'Now: <b>' + cn.name + '</b> — until ' + en.name + ' at ' + fmtT(live.nextE.t));
+  }
+  out += '<section class="hero"><div class="row"><div><div class="date">' + esc(cap(fmtDate(td, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }))) + '</div><div class="hij">' + hLive.d + ' ' + HM_LAT[hLive.m - 1] + ' ' + hLive.y + ' AH · <span class="ar">' + HM_AR[hLive.m - 1] + '</span></div></div><div class="clock" id="clock">' + fmtT(now, { sec: true }) + '</div></div>' + heroMid + '<div class="cur" id="cur">' + curLine + '</div></section>';
+  /* date nav */
+  out += '<div class="dnav noprint"><button class="btn" data-act="day" data-n="-1" aria-label="' + L('Edellinen päivä', 'Previous day') + '">' + svg('left') + '</button><div class="mid"><b>' + esc(cap(fmtDate(sel, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }))) + '</b><small>' + hStr(hSel) + ' AH</small></div><button class="btn" data-act="day" data-n="1" aria-label="' + L('Seuraava päivä', 'Next day') + '">' + svg('right') + '</button></div>';
+  out += '<div class="dnav noprint" style="justify-content:center"><input type="date" class="btn" id="datePick" value="' + sel.y + '-' + pad(sel.m) + '-' + pad(sel.d) + '"> ' + (isToday ? '' : '<button class="btn" data-act="dayToday">' + L('Tänään', 'Today') + '</button>') + '</div>';
+  const tags = eventsOf(hSel).map(e => '<span class="tag gold">' + esc(e.label) + '</span>').concat(fri ? ['<span class="tag">' + L("Jumu'ah — perjantai", "Jumu'ah — Friday") + '</span>'] : []);
+  if (day.polar) out += '<div class="notice warn">' + (day.polar === 'day' ? L('Aurinko ei laske tällä leveysasteella tänä päivänä (yötön yö). Auringonnousu/-lasku ja niistä riippuvat ajat eivät ole laskettavissa — valitse asetuksista "Lähin leveys" tai noudata paikallista yhteisöäsi.', 'The sun does not set at this latitude today (midnight sun). Sunrise/sunset-based times cannot be computed — choose "Nearest latitude" in settings or follow your local community.') : L('Aurinko ei nouse tällä leveysasteella tänä päivänä (kaamos). Ajat eivät ole laskettavissa — valitse asetuksista "Lähin leveys" tai noudata paikallista yhteisöäsi.', 'The sun does not rise at this latitude today (polar night). Times cannot be computed — choose "Nearest latitude" in settings or follow your local community.')) + '</div>';
+  if (day.nearest && Math.abs(S.loc.lat) > 48.5) out += '<div class="notice">' + L('Ajat on laskettu leveysasteelle 48,5° (lähin leveys -sääntö).', 'Times computed for latitude 48.5° (nearest-latitude rule).') + '</div>';
+  /* prayer list */
+  const li = (k, minor, extra = '') => {
+    const t = day.t[k], n = pn(k, fri);
+    let cls = minor ? 'minor ' : '';
+    if (isToday) { if (cr && cr.k === k && !minor) cls += 'cur '; if (nx && nx.k === k && !minor) cls += 'next '; if (isFinite(t) && t < now && !(cr && cr.k === k)) cls += 'past '; }
+    const sup = (k === 'fajr' && day.flags.fajr) || (k === 'isha' && day.flags.isha) ? '<span class="sup" title="' + L('Arvioitu korkean leveysasteen säännöllä', 'Estimated with the high-latitude rule') + '">*</span>' : '';
+    const bell = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'].includes(k) ? '<button class="bell noprint' + (S.alerts.p[k] && S.alerts.on ? ' on' : '') + '" data-act="bell" data-k="' + k + '" aria-label="' + L('Muistutus', 'Reminder') + '">' + svg('bell') + '</button>' : '<span></span>';
+    return '<li class="' + cls + extra + '"><div class="n"><span class="ar">' + n.ar + '</span><b>' + esc(n.name) + '</b><small>' + esc(n.d) + '</small></div><div class="t">' + fmtT(t) + sup + '</div>' + bell + '</li>';
+  };
+  let rows = '';
+  if (S.showImsak) rows += li('imsak', true);
+  rows += li('fajr') + li('sunrise', true) + li('dhuhr') + li('asr') + li('maghrib') + li('isha');
+  if (S.showExtras) rows += li('ishraq', true, 'sep') + li('midnight', true) + li('lastThird', true);
+  out += '<div class="card"><ul class="prayers">' + rows + '</ul>' + ((day.flags.fajr || day.flags.isha) ? '<div class="legend"><span class="sup">*</span> ' + L('Korkean leveysasteen sääntö on muuttanut aikaa (aamunkoiton/hämärän kulma ei toteudu normaalisti tällä päivällä).', 'Time adjusted by the high-latitude rule (the twilight angle is not normally reached today).') + '</div>' : '') + '</div>';
+  /* info */
+  const ti = tags.length ? '<div class="tags">' + tags.join('') + '</div>' : '';
+  out += '<div class="card"><h2>' + L('Päivän tiedot', 'Day info') + '</h2><div class="kv"><span>' + L('Päivän pituus', 'Daylight') + '</span><span>' + fmtHM(day.dayLen) + '</span><span>' + L('Menetelmä', 'Method') + '</span><span>' + esc(METHOD_INFO[S.method][0]) + '</span><span>Asr</span><span>' + (S.asr === 'hanafi' ? L('Hanafi (varjo 2×)', 'Hanafi (shadow 2×)') : L('Shafi\'i / Maliki / Hanbali (varjo 1×)', 'Shafi\'i / Maliki / Hanbali (shadow 1×)')) + '</span><span>' + L('Aikavyöhyke', 'Time zone') + '</span><span>' + esc(S.loc.tz) + '</span></div>' + ti + '</div>';
+  /* fasting */
+  const fi = fastInfo(sel);
+  if (fi || S.fastAlways) {
+    const f = fi || { type: 'none', label: L('Ei erityistä paastopäivää', 'No special fast') };
+    const fastLen = day.t.maghrib - day.t.fajr;
+    out += '<div class="card"><h2>' + L('Paasto', 'Fasting') + '</h2><div>' + esc(f.label) + '</div>' + (f.type !== 'haram' ? '<div class="kv" style="margin-top:8px"><span>' + L('Suhoor päättyy (Imsak)', 'Suhoor ends (Imsak)') + '</span><span>' + fmtT(day.t.imsak) + '</span><span>' + L('Paasto alkaa (Fajr)', 'Fast begins (Fajr)') + '</span><span>' + fmtT(day.t.fajr) + '</span><span>' + L('Iftar (Maghrib)', 'Iftar (Maghrib)') + '</span><span>' + fmtT(day.t.maghrib) + '</span><span>' + L('Paaston pituus', 'Fast length') + '</span><span>' + fmtHM(fastLen) + '</span></div>' : '') + (isToday && f.type !== 'haram' && isFinite(day.t.maghrib) && isFinite(day.t.imsak) ? '<div class="center big" id="fastCd" style="margin-top:10px"></div><div class="center small mut" id="fastLbl"></div>' : '') + '</div>';
+  }
+  /* forbidden times */
+  if (S.showForbidden && isFinite(day.t.sunrise)) {
+    const w = [[day.t.sunrise, day.t.sunrise + 15 * 6e4, L('Auringonnousun aikaan', 'At sunrise')], [day.t.dhuhr - 10 * 6e4, day.t.dhuhr, L('Keskipäivällä (zawal)', 'At midday (zawal)')], [day.t.maghrib - 15 * 6e4, day.t.maghrib, L('Ennen auringonlaskua', 'Before sunset')]];
+    out += '<div class="card"><h2>' + L('Ajat, jolloin vapaaehtoista rukousta vältetään (arvio)', 'Times to avoid voluntary prayer (estimate)') + '</h2><div class="kv">' + w.map(x => '<span>' + x[2] + '</span><span>' + fmtT(x[0]) + ' – ' + fmtT(x[1]) + '</span>').join('') + '</div><div class="legend">' + L('Likiarvoja; koulukunnat tulkitsevat näitä eri tavoin. Pakolliset rukoukset ja kadotettujen korvaaminen eivät kuulu rajoitukseen kaikkien tulkintojen mukaan.', 'Approximate; schools differ. Obligatory prayers and make-up prayers are not restricted by all opinions.') + '</div></div>';
+  }
+  return out;
+}
+
+function monthDays(y, m) { return new Date(Date.UTC(y, m, 0)).getUTCDate(); }
+function vMonth() {
+  const td = today(), ms = MSEL || { y: td.y, m: td.m };
+  const n = monthDays(ms.y, ms.m);
+  let rows = '';
+  for (let d = 1; d <= n; d++) {
+    const o = { y: ms.y, m: ms.m, d }, day = getDay(o), h = hijri(o), isT = sameDay(o, td), wd = dow(o);
+    const c = k => '<td>' + fmtT(day.t[k]) + '</td>';
+    rows += '<tr class="' + (isT ? 'today ' : '') + (wd === 5 ? 'fri' : '') + '"><td>' + d + '. <small>' + fmtDate(o, { weekday: 'short' }) + '</small></td><td>' + h.d + '<small>/' + h.m + '</small></td>' + (S.showImsak ? c('imsak') : '') + c('fajr') + c('sunrise') + c('dhuhr') + c('asr') + c('maghrib') + c('isha') + '</tr>';
+  }
+  const h1 = hijri({ y: ms.y, m: ms.m, d: 1 }), h2 = hijri({ y: ms.y, m: ms.m, d: n });
+  const title = cap(fmtDate({ y: ms.y, m: ms.m, d: 1 }, { month: 'long', year: 'numeric' }));
+  return '<div class="dnav noprint"><button class="btn" data-act="month" data-n="-1" aria-label="prev">' + svg('left') + '</button><div class="mid"><b>' + esc(title) + '</b><small>' + HM_LAT[h1.m - 1] + ' ' + h1.y + (h1.m !== h2.m ? ' – ' + HM_LAT[h2.m - 1] + ' ' + h2.y : '') + '</small></div><button class="btn" data-act="month" data-n="1" aria-label="next">' + svg('right') + '</button></div>' +
+    '<div class="card"><div class="small mut" style="margin-bottom:6px">' + esc(S.loc.name) + ' · ' + esc(METHOD_INFO[S.method][0]) + ' · ' + esc(S.loc.tz) + '</div><div class="scroll"><table class="m"><thead><tr><th>' + L('Pvm', 'Date') + '</th><th>' + L('Hijri', 'Hijri') + '</th>' + (S.showImsak ? '<th>Imsak</th>' : '') + '<th>Fajr</th><th>' + L('Nousu', 'Rise') + '</th><th>Dhuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>' +
+    '<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn" data-act="monthToday">' + L('Tämä kuukausi', 'This month') + '</button><button class="btn" data-act="csv">' + L('Lataa CSV', 'Download CSV') + '</button><button class="btn" data-act="print">' + L('Tulosta', 'Print') + '</button></div>';
+}
+
+/* ---- Qibla ---- */
+let COMP = { on: false, heading: null, err: '' };
+function vQibla() {
+  const b = qiblaBearing(S.loc.lat, S.loc.lon), km = distKm(S.loc.lat, S.loc.lon);
+  let ticks = '';
+  for (let a = 0; a < 360; a += 10) { const mj = a % 30 === 0; ticks += '<line x1="150" y1="32" x2="150" y2="' + (mj ? 48 : 40) + '" transform="rotate(' + a + ' 150 150)" stroke-width="' + (mj ? 2.2 : 1) + '"/>'; }
+  const lets = [['N', 0], ['E', 90], ['S', 180], ['W', 270]].map(([l, a]) => '<text x="150" y="72" text-anchor="middle" transform="rotate(' + a + ' 150 150)"' + (l === 'N' ? ' style="fill:var(--bad)"' : '') + '>' + l + '</text>').join('');
+  const sv = '<svg id="compass" class="compass" viewBox="0 -14 300 314" role="img" aria-label="Qibla"><path d="M150 -12 L159 6 L141 6 Z" fill="var(--pri)"/><circle class="face" cx="150" cy="150" r="118"/><g id="ring" class="ring">' + ticks + lets +
+    '<g transform="rotate(' + b.toFixed(2) + ' 150 150)"><line x1="150" y1="150" x2="150" y2="44" stroke="var(--gold)" stroke-width="4" stroke-linecap="round"/><path d="M150 36 L160 58 L140 58 Z" fill="var(--gold)"/><rect x="137" y="4" width="26" height="26" rx="3" fill="#161616"/><rect x="137" y="11" width="26" height="4" fill="#d9b23c"/></g></g><circle cx="150" cy="150" r="6" fill="var(--ink)"/></svg>';
+  const sensors = typeof DeviceOrientationEvent !== 'undefined';
+  return '<div class="card"><div class="center mut small">' + L('Qiblan suunta (Kaaba, Mekka) sijainnistasi', 'Qibla direction (Kaaba, Makkah) from your location') + ' — ' + esc(S.loc.name) + '</div><div class="big" style="margin-top:6px">' + b.toFixed(1) + '°</div><div class="center mut small">' + L('pohjoisesta myötäpäivään (tosi pohjoinen) · etäisyys ', 'clockwise from true north · distance ') + Math.round(km).toLocaleString(locale()) + ' km</div>' + sv +
+    '<div class="center" id="compInfo" style="min-height:44px">' + (COMP.on ? '' : '<span class="mut small">' + L('Pohjoinen on ylhäällä: käytä esim. ulkoista kompassia ja käänny kultaisen nuolen suuntaan.', 'North is up: use an external compass and face the direction of the gold arrow.') + '</span>') + '</div>' +
+    '<div class="center noprint">' + (sensors ? '<button class="btn pri" data-act="compass">' + (COMP.on ? L('Pysäytä kompassi', 'Stop compass') : L('Käynnistä puhelimen kompassi', 'Start phone compass')) + '</button>' : '<span class="mut small">' + L('Laite ei tue kompassianturia.', 'This device has no compass sensor.') + '</span>') + '</div></div>' +
+    '<div class="card"><h2>' + L('Ohjeita', 'Tips') + '</h2><ul class="small" style="margin:0;padding-left:18px"><li>' + L('Pidä puhelin vaakasuorassa ja kaukana metalliesineistä ja magneeteista; kalibroi liikuttamalla kahdeksikkoa.', 'Hold the phone flat, away from metal and magnets; calibrate by moving it in a figure-eight.') + '</li><li>' + L('Kun yläreunan vihreä kolmio osoittaa Kaaba-kuvaan, olet qiblan suunnassa.', 'When the green triangle at the top points at the Kaaba icon, you are facing the qibla.') + '</li><li>' + L('Kompassi näyttää magneettista pohjoista; ero todelliseen pohjoiseen (deklinaatio) on Suomessa n. 8–10° itään. Mieluiten tarkista suunta myös muulla tavalla.', 'The compass reads magnetic north; the difference to true north (declination) can be several degrees. Cross-check by another means where possible.') + '</li><li>' + L('Aurinko on suoraan Kaaban yllä 27.5. (karkausvuonna 28.5.) klo 12:18 ja 15.7. (16.7.) klo 12:27 Mekan aikaa — silloin kaikkialla, missä aurinko on näkyvissä, qibla on auringon suuntaan.', 'The sun is directly above the Kaaba on 27 May (28 May in leap years) at 12:18 and 15 July (16 July) at 12:27 Makkah time — then the qibla is toward the sun wherever it is visible.') + '</li></ul></div>';
+}
+function updateCompass() {
+  const ring = $('#ring'); if (!ring) return;
+  const b = qiblaBearing(S.loc.lat, S.loc.lon), hd = COMP.heading;
+  ring.setAttribute('transform', 'rotate(' + (hd == null ? 0 : -hd).toFixed(1) + ' 150 150)');
+  const el = $('#compInfo'), cp = $('#compass');
+  if (!COMP.on || !el) { if (cp) cp.classList.remove('aligned'); return; }
+  if (hd == null) { el.innerHTML = '<span class="mut">' + (COMP.err || L('Odotetaan anturia… liikuta puhelinta.', 'Waiting for sensor… move the phone.')) + '</span>'; return; }
+  const diff = Math.abs(wrap(b - hd + 180, 360) - 180), al = diff <= 3;
+  cp.classList.toggle('aligned', al);
+  el.innerHTML = '<b style="font-size:20px">' + Math.round(hd) + '°</b> · ' + (al ? '<b style="color:var(--pri)">' + L('Olet qiblan suunnassa ✓', 'You are facing the qibla ✓') + '</b>' : L('Käänny ', 'Turn ') + Math.round(diff) + '° ' + (wrap(b - hd, 360) < 180 ? L('oikealle', 'right') : L('vasemmalle', 'left')));
+}
+let compassHandler = null;
+async function toggleCompass() {
+  if (COMP.on) { COMP.on = false; COMP.heading = null; window.removeEventListener('deviceorientationabsolute', compassHandler, true); window.removeEventListener('deviceorientation', compassHandler, true); render(); return; }
+  try {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') { const r = await DeviceOrientationEvent.requestPermission(); if (r !== 'granted') { toast(L('Kompassin lupa evättiin.', 'Compass permission denied.')); return; } }
+  } catch (e) { toast(L('Kompassin käyttö ei onnistunut: ', 'Compass failed: ') + e.message); return; }
+  let smooth = null, gotAbs = false;
+  compassHandler = e => {
+    let hd = null;
+    if (typeof e.webkitCompassHeading === 'number') hd = e.webkitCompassHeading;
+    else if (e.type === 'deviceorientationabsolute' && e.alpha != null) { gotAbs = true; hd = 360 - e.alpha; }
+    else if (!gotAbs && e.absolute && e.alpha != null) hd = 360 - e.alpha;
+    if (hd == null || isNaN(hd)) return;
+    const so = (screen.orientation && screen.orientation.angle) || 0; hd = wrap(hd + so, 360);
+    smooth = smooth == null ? hd : wrap(smooth + 0.25 * (wrap(hd - smooth + 180, 360) - 180), 360);
+    COMP.heading = smooth; updateCompass();
+  };
+  window.addEventListener('deviceorientationabsolute', compassHandler, true);
+  window.addEventListener('deviceorientation', compassHandler, true);
+  COMP.on = true; COMP.heading = null; COMP.err = '';
+  render();
+  setTimeout(() => { if (COMP.on && COMP.heading == null) { COMP.err = L('Kompassianturia ei löytynyt tai se ei anna tietoa tässä selaimessa/laitteessa.', 'No compass data from this browser/device.'); updateCompass(); } }, 2500);
+}
+
+/* ---- Hijri calendar ---- */
+function hijriFirst(hy, hm) {
+  const t = today(), h = hijri(t), delta = (hy * 12 + hm) - (h.y * 12 + h.m), key = hy * 12 + hm;
+  let est = addDays(t, -(h.d - 1) + Math.round(delta * 29.5306));
+  for (let i = 0; i < 90; i++) { const x = hijri(est), k = x.y * 12 + x.m; if (k > key) est = addDays(est, -Math.max(1, x.d)); else if (k < key) est = addDays(est, 1); else if (x.d > 1) est = addDays(est, -(x.d - 1)); else return est; }
+  return est;
+}
+function vCalendar() {
+  const t = today(), ht = hijri(t);
+  const hs = HSEL || { y: ht.y, m: ht.m };
+  const first = hijriFirst(hs.y, hs.m);
+  const days = []; let o = first;
+  while (days.length < 31) { const h = hijri(o); if (h.y * 12 + h.m !== hs.y * 12 + hs.m) break; days.push({ o, h }); o = addDays(o, 1); }
+  const ws = S.lang === 'en' ? 0 : 1, wdNames = [];
+  for (let i = 0; i < 7; i++) wdNames.push(fmtDate(addDays({ y: 2024, m: 1, d: 7 }, i + ws), { weekday: 'short' }));
+  let grid = wdNames.map(w => '<div class="h">' + esc(w) + '</div>').join('');
+  const lead = (dow(first) - ws + 7) % 7;
+  for (let i = 0; i < lead; i++) grid += '<div class="c e"></div>';
+  days.forEach(({ o, h }) => {
+    const ev = eventsOf(h);
+    grid += '<div class="c' + (dow(o) === 5 ? ' fri' : '') + (sameDay(o, t) ? ' today' : '') + (ev.length ? ' ev' : '') + '" title="' + esc(ev.map(e => e.label).join(', ')) + '"><b>' + h.d + '</b><small>' + o.d + '.' + o.m + '.</small></div>';
+  });
+  const evs = []; days.forEach(({ o, h }) => eventsOf(h).forEach(e => evs.push({ o, h, e })));
+  const up = []; let q = t;
+  for (let i = 0; i < 400 && up.length < 6; i++, q = addDays(q, 1)) { const h = hijri(q); eventsOf(h).forEach(e => { if (!up.find(u => u.e.key === e.key && Math.abs(u.i - i) < 5)) up.push({ q, e, i, h }); }); }
+  const rm = up.find(u => u.e.key === 'ramadan');
+  return '<div class="dnav noprint"><button class="btn" data-act="hmonth" data-n="-1" aria-label="prev">' + svg('left') + '</button><div class="mid"><b>' + HM_LAT[hs.m - 1] + ' ' + hs.y + ' AH</b><small class="ar" style="font-size:20px">' + HM_AR[hs.m - 1] + '</small></div><button class="btn" data-act="hmonth" data-n="1" aria-label="next">' + svg('right') + '</button></div>' +
+    '<div class="card"><div class="cal">' + grid + '</div><div class="legend">' + L('Hijri-päivä isolla, gregoriaaninen pienellä. Perjantait korostettu. Kalenteri: Umm al-Qura' + (HF ? '' : ' (selaimesi ei tue sitä — käytössä taulukkolaskenta)') + '. Paikallinen kuunäkö voi poiketa ±1 pv; säädä tarvittaessa Asetukset → Hijri.', 'Hijri day large, Gregorian small. Fridays highlighted. Calendar: Umm al-Qura' + (HF ? '' : ' (not supported by your browser — tabular fallback used)') + '. Local moon sighting may differ by ±1 day; adjust in Settings → Hijri.') + '</div><div class="center noprint" style="margin-top:8px"><button class="btn" data-act="hmonthToday">' + L('Tämä kuukausi', 'This month') + '</button></div></div>' +
+    (evs.length ? '<div class="card"><h2>' + L('Tämän kuukauden päivät', 'This month') + '</h2><div class="kv">' + evs.map(x => '<span>' + esc(x.e.label) + '</span><span>' + x.h.d + ' · ' + x.o.d + '.' + x.o.m + '.</span>').join('') + '</div></div>' : '') +
+    '<div class="card"><h2>' + L('Tulevat juhla- ja merkkipäivät', 'Upcoming occasions') + '</h2>' + (rm ? '<div style="margin-bottom:8px"><b>' + L('Ramadan alkaa ', 'Ramadan begins in ') + '</b> ' + L('noin ' + rm.i + ' päivän päästä', rm.i + ' days (approx.)') + ' (' + fmtDate(rm.q, { day: 'numeric', month: 'long', year: 'numeric' }) + ')</div>' : '') + '<div class="kv">' + up.map(x => '<span>' + esc(x.e.label) + '</span><span>' + fmtDate(x.q, { day: 'numeric', month: 'short', year: 'numeric' }) + (x.i === 0 ? ' · ' + L('tänään', 'today') : '') + '</span>').join('') + '</div></div>';
+}
+
+/* ---- Tasbih ---- */
+const DHIKR = [
+  { ar: 'سبحان الله', tr: 'SubhanAllah', fi: 'Kunnia Allahille', en: 'Glory be to Allah', n: 33 },
+  { ar: 'الحمد لله', tr: 'Alhamdulillah', fi: 'Kiitos kuuluu Allahille', en: 'Praise be to Allah', n: 33 },
+  { ar: 'الله أكبر', tr: 'Allahu Akbar', fi: 'Allah on suurin', en: 'Allah is the greatest', n: 34 },
+  { ar: 'لا إله إلا الله', tr: 'La ilaha illallah', fi: 'Ei ole jumalaa paitsi Allah', en: 'There is no god but Allah', n: 100 },
+  { ar: 'أستغفر الله', tr: 'Astaghfirullah', fi: 'Pyydän Allahilta anteeksiantoa', en: 'I seek forgiveness from Allah', n: 100 },
+  { ar: 'اللهم صل على محمد', tr: 'Allahumma salli ala Muhammad', fi: 'Siunausta Muhammadille', en: 'Blessings upon Muhammad', n: 100 },
+  { ar: '', tr: '', fi: 'Vapaa laskuri', en: 'Free counter', n: 0 }
+];
+let TB = Object.assign({ i: 0, c: 0, total: 0, auto: true }, lsGet(LSK_TB) || {});
+const tbSave = () => lsSet(LSK_TB, TB);
+function vTasbih() {
+  const d = DHIKR[TB.i];
+  return '<div class="card center"><div class="field stack" style="border:0"><select data-act="tbPreset" id="tbSel">' + DHIKR.map((x, i) => '<option value="' + i + '"' + (i === TB.i ? ' selected' : '') + '>' + esc(x.tr ? x.tr + ' (' + x.n + ')' : L(x.fi, x.en)) + '</option>').join('') + '</select></div>' +
+    '<button class="tb" data-act="tap" aria-label="count"><span><span id="tbC">' + TB.c + '</span><span class="ar">' + d.ar + '</span></span></button>' +
+    '<div class="mut">' + (d.n ? L('Tavoite ', 'Target ') + d.n : L('Ei tavoitetta', 'No target')) + ' · ' + L('Yhteensä ', 'Total ') + '<span id="tbT">' + TB.total + '</span></div>' +
+    '<div class="small mut" style="margin-top:4px">' + esc(S.lang === 'en' ? d.en : d.fi) + '</div>' +
+    '<div style="display:flex;gap:8px;justify-content:center;margin-top:14px"><button class="btn" data-act="tbUndo">−1</button><button class="btn" data-act="tbReset">' + L('Nollaa', 'Reset') + '</button></div>' +
+    '<label class="small" style="display:block;margin-top:12px"><input type="checkbox" id="tbAuto"' + (TB.auto ? ' checked' : '') + '> ' + L('Tasbih Fatima: siirry automaattisesti seuraavaan (33 · 33 · 34)', 'Tasbih Fatima: auto-advance to next (33 · 33 · 34)') + '</label></div>';
+}
+function tbTap() {
+  const d = DHIKR[TB.i]; TB.c++; TB.total++;
+  const done = d.n && TB.c >= d.n;
+  if (navigator.vibrate) navigator.vibrate(done ? [120, 60, 120] : 12);
+  if (done) {
+    toast(L('Tavoite saavutettu: ', 'Target reached: ') + d.n + ' × ' + d.tr);
+    TB.c = 0;
+    if (TB.auto && TB.i < 2) TB.i++;
+    tbSave(); render(); return;
+  }
+  tbSave(); $('#tbC').textContent = TB.c; $('#tbT').textContent = TB.total;
+}
+
+/* ---- Settings ---- */
+const optSel = (k, opts, val, num) => '<select data-k="' + k + '"' + (num ? ' data-n="1"' : '') + '>' + opts.map(([v, l]) => '<option value="' + v + '"' + (String(v) === String(val) ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select>';
+const optNum = (k, val, min, max, step) => '<input type="number" data-k="' + k + '" value="' + val + '" min="' + min + '" max="' + max + '" step="' + (step || 1) + '" inputmode="decimal">';
+const optChk = (k, val) => '<input type="checkbox" data-k="' + k + '"' + (val ? ' checked' : '') + '>';
+const fld = (lab, ctl, hint) => '<div class="field"><div class="lab">' + lab + (hint ? '<span class="hint">' + hint + '</span>' : '') + '</div>' + ctl + '</div>';
+let SEARCH = { q: '', res: [], busy: false };
+function vSettings() {
+  const loc = S.loc, custom = S.method === 'CUSTOM';
+  const notifState = 'Notification' in window ? Notification.permission : 'unsupported';
+  const hl = Math.abs(loc.lat) > 48;
+  let o = '';
+  o += '<div class="card"><h2>' + L('Sijainti', 'Location') + '</h2><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="color:var(--pri)">' + svg('pin') + '</span><div><b>' + esc(loc.name) + '</b>' + (loc.cc ? ' · ' + esc(loc.cc) : '') + '<div class="small mut">' + loc.lat.toFixed(4) + '°, ' + loc.lon.toFixed(4) + '° · ' + esc(loc.tz) + '</div></div></div>' +
+    '<div class="field stack" style="border:0;padding-top:0"><input type="search" id="citySearch" placeholder="' + L('Hae kaupunki tai paikkakunta…', 'Search city or place…') + '" value="' + esc(SEARCH.q) + '" autocomplete="off"><ul class="res" id="cityRes" ' + (SEARCH.res.length ? '' : 'hidden') + '>' + resHTML() + '</ul></div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" data-act="gps">' + svg('gps') + ' ' + L('Käytä sijaintiani (GPS)', 'Use my location (GPS)') + '</button></div>' +
+    '<details style="margin-top:10px"><summary>' + L('Syötä koordinaatit käsin', 'Enter coordinates manually') + '</summary>' +
+    fld(L('Nimi', 'Name'), '<input type="text" data-k="loc.name" value="' + esc(loc.name) + '">') + fld(L('Leveysaste (−90…90)', 'Latitude (−90…90)'), optNum('loc.lat', loc.lat, -90, 90, 0.0001)) + fld(L('Pituusaste (−180…180)', 'Longitude (−180…180)'), optNum('loc.lon', loc.lon, -180, 180, 0.0001)) +
+    fld(L('Aikavyöhyke (IANA)', 'Time zone (IANA)'), '<input type="text" data-k="loc.tz" list="tzlist" value="' + esc(loc.tz) + '"><datalist id="tzlist">' + tzList().map(z => '<option value="' + z + '">').join('') + '</datalist>', L('esim. Europe/Helsinki — kesäaika huomioidaan automaattisesti', 'e.g. Europe/Helsinki — DST is handled automatically')) +
+    fld(L('Korkeus merenpinnasta (m)', 'Elevation (m)'), optNum('loc.elev', Math.round(loc.elev || 0), 0, 9000, 1)) + fld(L('Käytä korkeutta auringonnousu/-laskulaskennassa', 'Use elevation for sunrise/sunset'), optChk('useElev', S.useElev), L('Yleensä pois päältä; vaikuttaa vain vuoristossa.', 'Normally off; matters only at altitude.')) + '</details></div>';
+  o += '<div class="card"><h2>' + L('Laskentamenetelmä', 'Calculation method') + '</h2>' +
+    fld(L('Menetelmä', 'Method'), optSel('method', Object.keys(METHODS).map(k => [k, METHOD_INFO[k][0]]), S.method), '') +
+    '<div class="small mut" style="padding:4px 0 8px">' + esc(METHOD_INFO[S.method][1]) + '</div>' +
+    (custom ? fld('Fajr °', optNum('customFajr', S.customFajr, 5, 25, 0.1)) + fld('Isha °', optNum('customIsha', S.customIsha, 5, 25, 0.1)) + fld(L('Isha minuutteina Maghribista (0 = käytä kulmaa)', 'Isha minutes after Maghrib (0 = use angle)'), optNum('customIshaInt', S.customIshaInt, 0, 180, 1)) : '') +
+    fld('Asr', optSel('asr', [['standard', L('Shafi\'i, Maliki, Hanbali (varjo = 1×)', 'Shafi\'i, Maliki, Hanbali (shadow = 1×)')], ['hanafi', L('Hanafi (varjo = 2×)', 'Hanafi (shadow = 2×)')]], S.asr)) +
+    fld(L('Korkea leveysaste', 'High latitudes'), optSel('highLat', [['angle', L('Kulmaperusteinen (oletus)', 'Angle-based (default)')], ['middle', L('Yön puoliväli', 'Middle of the night')], ['seventh', L('Yön seitsemäsosa', 'One-seventh of night')], ['nearest', L('Lähin leveys (48,5°)', 'Nearest latitude (48.5°)')], ['none', L('Ei säätöä (näytä "—")', 'No adjustment (show "—")')]], S.highLat),
+      hl ? L('Sijaintisi on yli 48° — Fajr/Isha eivät toteudu kesällä normaalilla kulmalla. Käytä paikallisen yhteisösi (esim. moskeijan) valitsemaa sääntöä!', 'Your latitude is above 48° — Fajr/Isha may not occur in summer. Use the rule your local community (mosque) follows!') : L('Vaikuttaa vain kun hämärän kulmaa ei saavuteta.', 'Only matters when the twilight angle is not reached.')) + '</div>';
+  o += '<div class="card"><h2>' + L('Hienosäätö', 'Fine tuning') + '</h2><div class="small mut" style="margin-bottom:6px">' + L('Minuutit lisätään menetelmän omiin varoaikoihin. Käytä tätä, jos paikallinen moskeija poikkeaa laskennasta.', 'Minutes are added on top of the method\'s own offsets. Use this to match your local mosque.') + '</div><div class="adj">' +
+    ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'].map(k => '<label>' + pn(k).name + '<input type="number" data-k="adj.' + k + '" value="' + S.adj[k] + '" min="-60" max="60" step="1" inputmode="numeric"></label>').join('') + '</div>' +
+    fld('Imsak', optNum('imsak', S.imsak, 0, 60, 1), L('minuuttia ennen Fajria', 'minutes before Fajr')) +
+    fld(L('Pyöristys', 'Rounding'), optSel('rounding', [['nearest', L('Lähin minuutti', 'Nearest minute')], ['safe', L('Varovainen (Fajr/Dhuhr/Asr/Maghrib/Isha ylös, nousu alas)', 'Cautious (prayers up, sunrise down)')], ['none', L('Ei pyöristystä (sekunnit)', 'None (show seconds)')]], S.rounding)) +
+    fld(L('Islamilainen keskiyö', 'Islamic midnight'), optSel('midnight', [['fajr', L('Maghribista Fajriin', 'Maghrib → Fajr')], ['sunrise', L('Maghribista auringonnousuun', 'Maghrib → sunrise')]], S.midnight)) + '</div>';
+  o += '<div class="card"><h2>' + L('Hijri-kalenteri', 'Hijri calendar') + '</h2>' +
+    fld(L('Päivien korjaus', 'Day adjustment'), optSel('hijriAdj', [[-2, '−2'], [-1, '−1'], [0, '0'], [1, '+1'], [2, '+2']], S.hijriAdj, true), L('Jos paikallinen kuunäkö poikkeaa Umm al-Qura -kalenterista', 'If local moon sighting differs from Umm al-Qura')) +
+    fld(L('Vaihda päivä Maghribissa', 'Change day at Maghrib'), optChk('hijriAfterMaghrib', S.hijriAfterMaghrib), L('Islamilainen päivä alkaa auringonlaskussa', 'The Islamic day begins at sunset')) + '</div>';
+  o += '<div class="card"><h2>' + L('Ilmoitukset ja ääni', 'Alerts and sound') + '</h2>' +
+    fld(L('Rukousmuistutukset käytössä', 'Prayer alerts enabled'), optChk('alerts.on', S.alerts.on), L('Toimii vain kun tämä sivu on auki (myös taustavälilehtenä). Selain ei voi herättää suljettua sivua.', 'Works only while this page is open (a background tab is fine). A browser cannot wake a closed page.')) +
+    '<div class="field"><div class="lab">' + L('Muistutettavat rukoukset', 'Prayers to alert') + '<span class="hint">' + L('Voit vaihtaa myös aikalistan kellosta', 'Also toggle via bells in the time list') + '</span></div></div><div class="adj">' + PRAYERS.map(k => '<label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" data-k="alerts.p.' + k + '"' + (S.alerts.p[k] ? ' checked' : '') + ' style="width:22px;height:22px"> ' + pn(k).name + '</label>').join('') + '</div>' +
+    fld(L('Ennakkomuistutus (min)', 'Pre-alert (min)'), optNum('alerts.pre', S.alerts.pre, 0, 120, 1), L('0 = vain rukousajan alkaessa', '0 = only at prayer time')) +
+    fld(L('Ääni', 'Sound'), optSel('alerts.sound', [['chime', L('Pehmeä kellonsoitto', 'Soft chime')], ['custom', L('Oma äänitiedosto (esim. adhan)', 'My audio file (e.g. adhan)')], ['off', L('Ei ääntä', 'No sound')]], S.alerts.sound)) +
+    fld(L('Äänenvoimakkuus', 'Volume'), optNum('alerts.volume', S.alerts.volume, 0, 100, 5)) +
+    '<div class="field stack"><div class="lab">' + L('Oma äänitiedosto', 'Custom audio file') + '<span class="hint">' + (S._hasCustom ? L('Tallennettu tähän selaimeen.', 'Saved in this browser.') : L('Valitse MP3/OGG/WAV — tallentuu vain tähän selaimeen.', 'Choose MP3/OGG/WAV — stored only in this browser.')) + '</span></div><input type="file" id="audioFile" accept="audio/*">' + (S._hasCustom ? ' <button class="btn sm" data-act="clearAudio">' + L('Poista', 'Remove') + '</button>' : '') + '</div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" data-act="testSound">' + L('Testaa ääni', 'Test sound') + '</button><button class="btn" data-act="stopSound">' + L('Hiljennä', 'Stop') + '</button><button class="btn" data-act="notifPerm"' + (notifState === 'granted' || notifState === 'unsupported' ? ' disabled' : '') + '>' + (notifState === 'granted' ? L('Selainilmoitukset sallittu ✓', 'Browser notifications allowed ✓') : notifState === 'denied' ? L('Ilmoitukset estetty selaimessa', 'Notifications blocked in browser') : notifState === 'unsupported' ? L('Selain ei tue ilmoituksia', 'Notifications unsupported') : L('Salli selainilmoitukset', 'Allow browser notifications')) + '</button></div></div>';
+  o += '<div class="card"><h2>' + L('Näkymä', 'Display') + '</h2>' +
+    fld(L('Kieli', 'Language'), optSel('lang', [['fi', 'Suomi'], ['en', 'English']], S.lang)) +
+    fld(L('Teema', 'Theme'), optSel('theme', [['auto', L('Automaattinen', 'Automatic')], ['light', L('Vaalea', 'Light')], ['dark', L('Tumma', 'Dark')]], S.theme)) +
+    fld(L('12 tunnin kello', '12-hour clock'), optChk('h12', S.h12)) +
+    fld(L('Näytä Imsak', 'Show Imsak'), optChk('showImsak', S.showImsak)) +
+    fld(L('Näytä Ishraq, keskiyö ja yön kolmannes', 'Show Ishraq, midnight and last third'), optChk('showExtras', S.showExtras)) +
+    fld(L('Näytä vältettävät rukousajat', 'Show times to avoid prayer'), optChk('showForbidden', S.showForbidden)) +
+    fld(L('Näytä paastokortti aina', 'Always show fasting card'), optChk('fastAlways', S.fastAlways)) + '</div>';
+  o += '<div class="card"><h2>' + L('Tietoja ja tarkkuus', 'About and accuracy') + '</h2><div class="small">' +
+    '<p>' + L('Ajat lasketaan laitteessasi tähtitieteellisesti (Jean Meeus, <i>Astronomical Algorithms</i>: auringon paikka, ajan yhtälö, nutaatio) — ei internetyhteyttä tarvita. Laskentaa on verrattu Aladhan.com-palveluun; erot ovat tyypillisesti 0–1 minuuttia. Hakutoiminto käyttää Open-Meteo-paikannusta ja GPS:n nimeämiseen OpenStreetMapia.', 'Times are computed on your device astronomically (Jean Meeus, <i>Astronomical Algorithms</i>: solar position, equation of time, nutation) — no internet is needed. The output was compared against Aladhan.com; differences are typically 0–1 minute. City search uses Open-Meteo geocoding and OpenStreetMap for naming GPS positions.') + '</p>' +
+    '<p>' + L('<b>Tärkeää:</b> eri menetelmät ja korkeat leveysasteet (yli ~48°, mm. koko Suomi) antavat eri Fajr- ja Isha-aikoja. Rukousajan alkamisen ja Ramadanin alun varmistaminen kuuluu aina paikalliselle pätevälle yhteisölle/moskeijalle. Käytä tätä sovellusta apuna, ei ainoana lähteenä, ja lisää tarvittaessa varoaikaa.', '<b>Important:</b> different methods and high latitudes (above ~48°, including all of Finland) produce different Fajr and Isha times. Confirming prayer times and the start of Ramadan is the responsibility of your qualified local community/mosque. Use this app as an aid, not the only source, and add a safety margin if needed.') + '</p></div>' +
+    '<button class="btn" data-act="resetAll" style="color:var(--bad)">' + L('Palauta oletusasetukset', 'Reset all settings') + '</button></div>';
+  return o;
+}
+const tzList = () => { try { return Intl.supportedValuesOf('timeZone'); } catch (e) { return ['Europe/Helsinki', 'Europe/Stockholm', 'Europe/London', 'Europe/Istanbul', 'Asia/Riyadh', 'Africa/Cairo', 'America/New_York', 'UTC']; } };
+const resHTML = () => SEARCH.res.map((r, i) => '<li data-act="pick" data-i="' + i + '">' + esc(r.name) + (r.region ? ', <small>' + esc(r.region) + '</small>' : '') + (r.country ? ' <small>· ' + esc(r.country) + '</small>' : '') + '</li>').join('');
+
+/* ============================ location handling ============================ */
+function setLocation(l, fromGps) {
+  S.loc = { name: l.name, cc: l.cc || '', lat: +l.lat, lon: +l.lon, tz: l.tz && tzOK(l.tz) ? l.tz : Intl.DateTimeFormat().resolvedOptions().timeZone, elev: l.elev || 0 };
+  S.locSet = true;
+  if (!S.methodTouched) { const m = CC_METHOD[(S.loc.cc || '').toUpperCase()] || 'MWL'; if (m !== S.method) { S.method = m; toast(L('Laskentamenetelmäksi valittiin: ', 'Calculation method set to: ') + METHOD_INFO[m][0] + L(' (muutettavissa asetuksissa)', ' (change in settings)')); } }
+  SEARCH = { q: '', res: [], busy: false };
+  save(); rebuildCfg(); render();
+}
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+let searchTimer = null, searchAbort = null;
+function runSearch(q) {
+  SEARCH.q = q;
+  const nq = norm(q.trim());
+  if (nq.length < 2) { SEARCH.res = []; updateRes(); return; }
+  SEARCH.res = CITIES.filter(c => norm(c.name).includes(nq)).slice(0, 5).map(c => Object.assign({ country: c.cc, region: '' }, c));
+  updateRes();
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(async () => {
+    if (searchAbort) searchAbort.abort();
+    searchAbort = new AbortController();
+    try {
+      const r = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=8&format=json&language=' + (S.lang === 'en' ? 'en' : 'fi') + '&name=' + encodeURIComponent(q.trim()), { signal: searchAbort.signal });
+      const j = await r.json();
+      const rem = (j.results || []).map(x => ({ name: x.name, region: x.admin1 || '', country: x.country || x.country_code || '', cc: x.country_code || '', lat: x.latitude, lon: x.longitude, tz: x.timezone, elev: x.elevation || 0 }));
+      const seen = new Set(SEARCH.res.map(x => x.name + x.lat.toFixed(1)));
+      rem.forEach(x => { if (!seen.has(x.name + x.lat.toFixed(1))) SEARCH.res.push(x); });
+      updateRes();
+    } catch (e) { if (e.name !== 'AbortError' && !SEARCH.res.length) { SEARCH.res = []; const el = $('#cityRes'); if (el) { el.hidden = false; el.innerHTML = '<li>' + L('Ei tuloksia (tarkista verkkoyhteys).', 'No results (check connection).') + '</li>'; } } }
+  }, 350);
+}
+function updateRes() { const el = $('#cityRes'); if (!el) return; el.hidden = !SEARCH.res.length; el.innerHTML = resHTML(); }
+function useGps() {
+  if (!navigator.geolocation) { toast(L('Selain ei tue paikannusta.', 'Geolocation not supported.')); return; }
+  toast(L('Haetaan sijaintia…', 'Getting location…'));
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const lat = pos.coords.latitude, lon = pos.coords.longitude;
+    let tz = Intl.DateTimeFormat().resolvedOptions().timeZone, name = '', cc = '';
+    const t1 = fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m&timezone=auto').then(r => r.json()).then(j => { if (j.timezone && tzOK(j.timezone)) tz = j.timezone; }).catch(() => { });
+    const t2 = fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&accept-language=' + S.lang + '&lat=' + lat + '&lon=' + lon).then(r => r.json()).then(j => { const a = j.address || {}; name = a.city || a.town || a.village || a.municipality || a.county || j.name || ''; cc = (a.country_code || '').toUpperCase(); }).catch(() => { });
+    await Promise.all([t1, t2]);
+    setLocation({ name: name || (L('Sijaintini', 'My location') + ' (' + lat.toFixed(2) + ', ' + lon.toFixed(2) + ')'), cc, lat, lon, tz, elev: pos.coords.altitude > 0 ? pos.coords.altitude : 0 }, true);
+    toast(L('Sijainti päivitetty.', 'Location updated.'));
+  }, err => toast(L('Sijaintia ei saatu: ', 'Location failed: ') + (err.code === 1 ? L('lupa evätty', 'permission denied') : err.message) + L('. Hae kaupunki käsin.', '. Search a city instead.')), { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 });
+}
+
+/* ============================ shell & events ============================ */
+const NAV = [['today', 'clock'], ['month', 'table'], ['qibla', 'compass'], ['calendar', 'moon'], ['tasbih', 'count'], ['settings', 'gear']];
+const NAVL = { today: ['Tänään', 'Today'], month: ['Kuukausi', 'Month'], qibla: ['Qibla', 'Qibla'], calendar: ['Kalenteri', 'Calendar'], tasbih: ['Tasbih', 'Tasbih'], settings: ['Asetukset', 'Settings'] };
+function applyTheme() {
+  const dark = S.theme === 'dark' || (S.theme === 'auto' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = dark ? '#07130e' : '#0b3d2e';
+}
+let lastNextKey = '';
+function render() {
+  const y = window.scrollY;
+  document.documentElement.lang = S.lang;
+  applyTheme();
+  $('#brandName').textContent = L('Rukousajat', 'Prayer Times');
+  $('#locChip').innerHTML = '<button class="chip" data-act="nav" data-v="settings">' + svg('pin') + esc(S.loc.name) + '</button>';
+  $('#nav').innerHTML = NAV.map(([v, ic]) => '<button data-act="nav" data-v="' + v + '" class="' + (VIEW === v ? 'on' : '') + '">' + svg(ic) + '<span>' + NAVL[v][S.lang === 'en' ? 1 : 0] + '</span></button>').join('');
+  let html;
+  try { html = ({ today: vToday, month: vMonth, qibla: vQibla, calendar: vCalendar, tasbih: vTasbih, settings: vSettings })[VIEW](); }
+  catch (e) { html = '<div class="notice warn">' + esc(e.message) + '</div>'; console.error(e); }
+  $('#view').innerHTML = html;
+  if (VIEW === 'qibla') updateCompass();
+  if (VIEW === 'today') { const ls = liveState(Date.now()); lastNextKey = ls.nextP ? ls.nextP.k + ls.nextP.t : ''; tick(true); }
+  window.scrollTo(0, y);
+}
+function tick(first) {
+  const now = Date.now();
+  if (VIEW === 'today') {
+    const live = liveState(now), key = live.nextP ? live.nextP.k + live.nextP.t : '';
+    if (!first && key !== lastNextKey) { render(); return; }
+    const c = $('#clock'); if (c) c.textContent = fmtT(now, { sec: true });
+    if (live.nextP) {
+      const cd = $('#cd'); if (cd) cd.textContent = fmtDur(live.nextP.t - now);
+      const prevT = live.curP ? live.curP.t : live.nextP.t - 6 * 36e5, b = $('#bar'); if (b) b.style.width = Math.min(100, Math.max(0, (now - prevT) / (live.nextP.t - prevT) * 100)).toFixed(1) + '%';
+    }
+    const fc = $('#fastCd');
+    if (fc) {
+      const d = getDay(live.td);
+      if (now < d.t.imsak) { fc.textContent = fmtDur(d.t.imsak - now); $('#fastLbl').textContent = L('Suhoor päättyy (Imsak)', 'Until suhoor ends (Imsak)'); }
+      else if (now < d.t.maghrib) { fc.textContent = fmtDur(d.t.maghrib - now); $('#fastLbl').textContent = L('Iftariin (Maghrib)', 'Until iftar (Maghrib)'); }
+      else { fc.textContent = '✓'; $('#fastLbl').textContent = L('Paasto päättynyt tältä päivältä', 'Fast completed for today'); }
+    }
+    if (now % 60000 < 1100 || first) document.title = live.nextP ? pn(live.nextP.k).name + ' ' + fmtT(live.nextP.t) + ' · ' + fmtDur(live.nextP.t - now).slice(0, 5) : L('Rukousajat', 'Prayer Times');
+  }
+  checkAlerts(now);
+  const t = dateIn(now, S.loc.tz), dk = t.y + '-' + t.m + '-' + t.d;
+  if (tick.dk && tick.dk !== dk && VIEW === 'today' && !SEL) render();
+  tick.dk = dk;
+}
+function setPath(path, val) { const ks = path.split('.'); let o = S; for (let i = 0; i < ks.length - 1; i++) o = o[ks[i]]; o[ks[ks.length - 1]] = val; }
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const a = el.dataset.act, n = +el.dataset.n;
+  switch (a) {
+    case 'nav': VIEW = el.dataset.v; render(); window.scrollTo(0, 0); break;
+    case 'day': SEL = addDays(SEL || today(), n); render(); break;
+    case 'dayToday': SEL = null; render(); break;
+    case 'month': { const m = MSEL || (({ y, m }) => ({ y, m }))(today()); const d = new Date(Date.UTC(m.y, m.m - 1 + n, 1)); MSEL = { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1 }; render(); break; }
+    case 'monthToday': MSEL = null; render(); break;
+    case 'hmonth': { const h = HSEL || (({ y, m }) => ({ y, m }))(hijri(today())); let k = h.y * 12 + (h.m - 1) + n; HSEL = { y: Math.floor(k / 12), m: (k % 12) + 1 }; render(); break; }
+    case 'hmonthToday': HSEL = null; render(); break;
+    case 'gps': useGps(); break;
+    case 'pick': setLocation(SEARCH.res[+el.dataset.i]); break;
+    case 'bell': {
+      const k = el.dataset.k;
+      if (!S.alerts.on) { S.alerts.on = true; S.alerts.p[k] = true; getAC(); if ('Notification' in window && Notification.permission === 'default') try { Notification.requestPermission().then(() => render()); } catch (x) { } toast(L('Muistutukset käyttöön — pidä sivu auki.', 'Alerts enabled — keep this page open.')); }
+      else S.alerts.p[k] = !S.alerts.p[k];
+      save(); render(); break;
+    }
+    case 'notifPerm': try { await Notification.requestPermission(); } catch (x) { } render(); break;
+    case 'testSound': getAC(); playSound(false); break;
+    case 'stopSound': stopSound(); break;
+    case 'clearAudio': try { await idbDel('adhan'); } catch (x) { } customURL = null; S._hasCustom = false; if (S.alerts.sound === 'custom') S.alerts.sound = 'chime'; save(); render(); break;
+    case 'compass': toggleCompass(); break;
+    case 'tap': tbTap(); break;
+    case 'tbUndo': if (TB.c > 0) { TB.c--; TB.total = Math.max(0, TB.total - 1); tbSave(); render(); } break;
+    case 'tbReset': TB.c = 0; tbSave(); render(); break;
+    case 'csv': exportCSV(); break;
+    case 'print': window.print(); break;
+    case 'resetAll': if (confirm(L('Palautetaanko kaikki asetukset oletuksiin?', 'Reset all settings to defaults?'))) { S = clone(DEF); save(); rebuildCfg(); render(); } break;
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'datePick') { const m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(t.value); if (m) { SEL = { y: +m[1], m: +m[2], d: +m[3] }; render(); } return; }
+  if (t.id === 'tbSel') { TB.i = +t.value; TB.c = 0; tbSave(); render(); return; }
+  if (t.id === 'tbAuto') { TB.auto = t.checked; tbSave(); return; }
+  if (t.id === 'audioFile') { const f = t.files[0]; if (f) idbPut('adhan', f).then(() => loadCustomAudio()).then(() => { S.alerts.sound = 'custom'; save(); render(); toast(L('Äänitiedosto tallennettu.', 'Audio file saved.')); }).catch(() => toast(L('Tallennus epäonnistui.', 'Saving failed.'))); return; }
+  const k = t.dataset && t.dataset.k; if (!k) return;
+  let v;
+  if (t.type === 'checkbox') v = t.checked;
+  else if (t.type === 'number' || t.dataset.n) { v = parseFloat(t.value); if (isNaN(v)) return; }
+  else v = t.value;
+  if (k === 'loc.lat') v = Math.max(-90, Math.min(90, v));
+  if (k === 'loc.lon') v = Math.max(-180, Math.min(180, v));
+  if (k === 'loc.tz' && !tzOK(v)) { toast(L('Tuntematon aikavyöhyke: ', 'Unknown time zone: ') + v); render(); return; }
+  if (k === 'method') S.methodTouched = true;
+  if (k.startsWith('loc.')) S.locSet = true;
+  if (k === 'alerts.on' && v) { getAC(); if ('Notification' in window && Notification.permission === 'default') try { Notification.requestPermission().then(() => render()); } catch (x) { } }
+  setPath(k, v); save(); rebuildCfg(); render();
+});
+document.addEventListener('input', e => { if (e.target.id === 'citySearch') runSearch(e.target.value); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { rebuildCfg(); render(); } });
+
+function exportCSV() {
+  const td = today(), ms = MSEL || { y: td.y, m: td.m }, n = monthDays(ms.y, ms.m);
+  const rows = [['Date', 'Hijri', 'Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha']];
+  for (let d = 1; d <= n; d++) { const o = { y: ms.y, m: ms.m, d }, day = getDay(o), h = hijri(o); rows.push([ms.y + '-' + pad(ms.m) + '-' + pad(d), hStr(h), ...['imsak', 'fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'].map(k => fmtT(day.t[k]))]); }
+  const blob = new Blob(['﻿' + rows.map(r => r.join(';')).join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'rukousajat-' + S.loc.name.replace(/\W+/g, '_') + '-' + ms.y + '-' + pad(ms.m) + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ============================ start ============================ */
+if (!tzOK(S.loc.tz)) S.loc.tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+rebuildCfg();
+loadCustomAudio().then(() => { if (VIEW === 'settings') render(); });
+render();
+setInterval(() => tick(false), 1000);
+</script>
+</body>
+</html>
